@@ -1,5 +1,5 @@
 # Используем официальный образ с Java
-FROM openjdk:22-jdk
+FROM openjdk:18-jdk AS build
 
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
