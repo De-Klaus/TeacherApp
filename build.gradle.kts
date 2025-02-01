@@ -4,7 +4,7 @@ plugins {
     id("java")
 }
 
-group = "org.example"
+group = "org.teacher"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -25,6 +27,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
 }
+
 
 tasks.test {
     useJUnitPlatform()
