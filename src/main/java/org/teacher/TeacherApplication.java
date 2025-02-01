@@ -20,7 +20,12 @@ public class TeacherApplication {
     @RestController
     public static class TeacherApplicationController {
 
-        @GetMapping("/hello")
+        @GetMapping("/teacher")
+        public String teacher() {
+            return "You are a teacher!";
+        }
+
+        @GetMapping("/")
         public String hello() {
             return "Hello Teacher!";
         }
