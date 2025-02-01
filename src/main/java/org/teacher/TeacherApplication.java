@@ -1,6 +1,7 @@
 package org.teacher;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.teacher.model.Teacher;
+import org.teacher.repository.TeacherRepository;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
@@ -20,8 +23,15 @@ public class TeacherApplication {
     @RestController
     public static class TeacherApplicationController {
 
+        @Autowired
+        private TeacherRepository teacherRepository;
+
         @GetMapping("/teacher")
         public String teacher() {
+
+            Teacher teacher = new Teacher("John D");
+            teacherRepository.save(teacher);
+
             return "You are a teacher!";
         }
 
