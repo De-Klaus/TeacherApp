@@ -10,8 +10,13 @@ COPY . .
 # Делаем gradlew исполняемым
 RUN chmod +x gradlew
 
+# Укажите порт, который ваше приложение будет слушать
+EXPOSE 8080
+
 # Сборка проекта
 RUN ./gradlew build
 
 # Запускаем приложение (замените на свою команду)
 CMD ["java", "-jar", "build/libs/teacher_app-1.0-SNAPSHOT.jar"]
+
+
