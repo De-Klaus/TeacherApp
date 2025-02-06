@@ -1,4 +1,4 @@
-package org.teacher.service;
+package org.teacher.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
