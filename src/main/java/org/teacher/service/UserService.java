@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.teacher.model.User;
 import org.teacher.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -18,5 +20,21 @@ public class UserService {
         }
         User user = new User(null, email, passwordEncoder.encode(password));
         return userRepository.save(user);
+    }
+
+    public User login(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOptional.get();
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
     }
 }
