@@ -14,13 +14,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User registerUser(String name, String ROLE, String email, String password) {
+    public User registerUser(String name, String email, String password) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("User already exists");
         }
         User user = User.builder()
                 .email(email)
-                .role(ROLE)
                 .name(name)
                 .password(passwordEncoder.encode(password))
                 .build();

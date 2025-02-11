@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @Entity
 @Table(name = "users")
 @Data
@@ -18,9 +19,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Enumerated(EnumType.STRING) // Если используешь Enum для ролей
-    @Column(nullable = false)
-    private String role;
 
     @Column(nullable = false)
     private String name;
