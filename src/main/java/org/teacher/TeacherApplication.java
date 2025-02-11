@@ -29,7 +29,7 @@ public class TeacherApplication {
         @Autowired
         private TeacherRepository teacherRepository;
 
-        /*@GetMapping("/teacher")
+        @GetMapping("/teacher")
         public String teacher() {
 
             Teacher teacher = new Teacher("John D");
@@ -41,6 +41,6 @@ public class TeacherApplication {
         @GetMapping("/")
         public String hello() {
             return "Hello Teacher!";
-        }*/
+        }
     }
 }
