@@ -7,22 +7,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CorsConfigurationSource corsConfigurationSource;
+
+    public SecurityConfig(CorsConfigurationSource corsConfigurationSource) {
+        this.corsConfigurationSource = corsConfigurationSource;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configure(http)) // ✅ Разрешаем CORS
-                .csrf(csrf -> csrf.disable()) // ✅ Отключаем CSRF
+                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // Правильный способ настройки CORS
+                .csrf(csrf -> csrf.disable()) // Отключаем CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/users").permitAll() // ✅ Разрешаем публичные эндпоинты
+                        .requestMatchers("/auth/login", "/auth/register", "/users").permitAll() // Публичные эндпоинты
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // ✅ Отключаем форму логина
-                .logout(logout -> logout.disable()); // ✅ Отключаем логаут
+                .formLogin(form -> form.disable()) // Отключаем форму логина
+                .logout(logout -> logout.disable()); // Отключаем логаут
 
         return http.build();
     }
