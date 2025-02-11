@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
@@ -22,14 +22,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // Правильный способ настройки CORS
-                .csrf(csrf -> csrf.disable()) // Отключаем CSRF
+                .cors(cors -> cors.disable()) // Можно отключить CORS здесь, так как он отдельно в CorsConfig
+                .csrf(csrf -> csrf.disable()) // REST API не нуждается в CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/users").permitAll() // Публичные эндпоинты
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // Отключаем форму логина
-                .logout(logout -> logout.disable()); // Отключаем логаут
+                .sessionManagement(session -> session.disable()) // REST API не использует сессии
+                .formLogin(form -> form.disable()) // Отключаем форму логина (используем JWT или OAuth)
+                .httpBasic(httpBasic -> httpBasic.disable()); // REST API лучше не использовать Basic Auth
 
         return http.build();
     }
