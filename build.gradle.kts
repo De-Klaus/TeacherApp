@@ -14,6 +14,8 @@ repositories {
 dependencies {
     //implementation("org.springframework.boot:spring-boot-starter-web")
 
+    implementation("jakarta.servlet:jakarta.servlet-api")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
