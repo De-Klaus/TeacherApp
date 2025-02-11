@@ -23,7 +23,7 @@ public class TeacherApplication {
         SpringApplication.run(TeacherApplication.class, args);
     }
 
-    @RestController
+    /*@RestController
     public static class TeacherApplicationController {
 
         @Autowired
@@ -42,5 +42,5 @@ public class TeacherApplication {
         public String hello() {
             return "Hello Teacher!";
         }
-    }
+    }*/
 }

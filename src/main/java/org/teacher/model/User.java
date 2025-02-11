@@ -1,5 +1,6 @@
 package org.teacher.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,15 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING) // Если используешь Enum для ролей
+    @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
+    private String name;
+
+    @JsonIgnore // Скрываем пароль при сериализации в JSON
     @Column(nullable = false)
     private String password;
 

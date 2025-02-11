@@ -12,8 +12,8 @@ import org.teacher.service.UserService;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user.getEmail(), user.getPassword()));
-    }
+    }*/
 }

@@ -2,44 +2,50 @@ package org.teacher.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final CorsConfigurationSource corsConfigurationSource;
+    @Bean //возвращаем кастомный MyUserDetailsService, который напишем далее
+    public UserDetailsService userDetailsService(){
+        return new MyUserDetailsService();
+    }
 
-    public SecurityConfig(CorsConfigurationSource corsConfigurationSource) {
-        this.corsConfigurationSource = corsConfigurationSource;
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService());
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.disable()) // Можно отключить CORS здесь, так как он отдельно в CorsConfig
-                .csrf(csrf -> csrf.disable()) // REST API не нуждается в CSRF
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/users").permitAll() // Публичные эндпоинты
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.disable()) // REST API не использует сессии
-                .formLogin(form -> form.disable()) // Отключаем форму логина (используем JWT или OAuth)
-                .httpBasic(httpBasic -> httpBasic.disable()); // REST API лучше не использовать Basic Auth
-
-        return http.build();
+        return  http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers("teacher/welcome").permitAll() //вход без авторизации
+                        .requestMatchers("teacher/**").authenticated()) //с авторизацией и аутентификацией
+                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Bean //Ставим степень кодировки, с которой кодировали пароль в базе
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(5);
     }
 }
 
