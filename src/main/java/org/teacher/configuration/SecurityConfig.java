@@ -8,11 +8,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -36,16 +41,38 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return  http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("teacher/welcome").permitAll() //вход без авторизации
-                        .requestMatchers("teacher/**").authenticated()) //с авторизацией и аутентификацией
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
+                //.csrf(AbstractHttpConfigurer::disable) // ✅ Отключаем CSRF (если используешь JWT)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/auth/register", "/users","teacher/welcome").permitAll() // Вход без авторизации
+                        .requestMatchers("teacher/**") // Доступ только для авторизованных
+                        .authenticated()) // Закрываем все остальные пути
+                //.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Если используешь JWT
+                .formLogin(AbstractAuthenticationFilterConfigurer::disable) // ✅ Отключаем форму логина
+                //.logout(AbstractHttpConfigurer::disable) // ✅ Отключаем логаут
+                .logout(logout -> logout.logoutUrl("/auth/logout").permitAll()) // ✅ Возможность логаута, но без формы входа
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("https://teacher-app-frontend-mnsu.onrender.com")); // ✅ Разрешаем только фронт https://teacher-app-frontend-mnsu.onrender.com
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ Разрешаем нужные методы
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Разрешаем заголовки
+        configuration.setAllowCredentials(true); // ✅ Разрешаем отправку cookies и токенов
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean //Ставим степень кодировки, с которой кодировали пароль в базе
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(5);
     }
+
+
+
 }
 
