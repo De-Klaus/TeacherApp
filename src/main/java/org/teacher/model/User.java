@@ -1,8 +1,9 @@
 package org.teacher.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 
 @Entity
@@ -16,15 +17,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-
-    @Column(nullable = false)
     private String name;
-
-    @JsonIgnore // Скрываем пароль при сериализации в JSON
-    @Column(nullable = false)
+    private String email;
     private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
 }

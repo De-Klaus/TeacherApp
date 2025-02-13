@@ -2,6 +2,7 @@ package org.teacher.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import org.teacher.dto.AuthRequest;
 import org.teacher.dto.AuthResponse;
+import org.teacher.dto.RegisterRequest;
+import org.teacher.exception.UserAlreadyExistsException;
+import org.teacher.model.User;
+import org.teacher.service.AuthService;
 import org.teacher.service.JwtService;
 
 @RestController
@@ -27,6 +32,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
@@ -52,6 +58,19 @@ public class AuthController {
         } catch (Exception e) {
             logger.error("Ошибка аутентификации пользователя {}: {}", request.getUsername(), e.getMessage());
             return ResponseEntity.status(401).body("Ошибка авторизации");
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        logger.info("Регистрация нового пользователя: {}", request.getEmail());
+
+        try {
+            User newUser = authService.registerUser(request);
+            return ResponseEntity.ok(new AuthResponse("Пользователь зарегистрирован успешно!"));
+        } catch (UserAlreadyExistsException e) {
+            logger.error("Ошибка регистрации: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
