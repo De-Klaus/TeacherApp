@@ -33,11 +33,11 @@ public class AuthService {
 
         // Создаём пользователя
         User newUser = new User();
-        newUser.setName(request.getName());
         newUser.setEmail(request.getEmail());
+        newUser.setName(request.getName());
         newUser.setUsername(request.getUsername());
         newUser.setPassword(hashedPassword);
-        newUser.setRoles(Collections.singleton(Role.USER)); // Назначаем роль по умолчанию
+        newUser.setRoles(Collections.singleton(Role.TEACHER)); // Назначаем роль по умолчанию
 
         // Сохраняем пользователя в БД
         userRepository.save(newUser);
