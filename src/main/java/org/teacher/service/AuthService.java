@@ -35,6 +35,7 @@ public class AuthService {
         User newUser = new User();
         newUser.setName(request.getName());
         newUser.setEmail(request.getEmail());
+        newUser.setUsername(request.getUsername());
         newUser.setPassword(hashedPassword);
         newUser.setRoles(Collections.singleton(Role.USER)); // Назначаем роль по умолчанию
 

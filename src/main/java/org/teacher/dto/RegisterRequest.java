@@ -8,5 +8,6 @@ import lombok.*;
 public class RegisterRequest {
     private String email;
     private String name;
+    private String username;
     private String password;
 }
