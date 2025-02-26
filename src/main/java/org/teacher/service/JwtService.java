@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
@@ -16,7 +17,13 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final Key SECRET_KEY = Keys.hmacShaKeyFor("your_secret_key_your_secret_key_".getBytes(StandardCharsets.UTF_8));
+    //private static final Key SECRET_KEY = Keys.hmacShaKeyFor("your_secret_key_your_secret_key_".getBytes(StandardCharsets.UTF_8));
+
+    private final SecretKey SECRET_KEY;
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
