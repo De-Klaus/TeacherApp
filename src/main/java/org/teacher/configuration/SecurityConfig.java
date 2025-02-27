@@ -66,9 +66,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://teacher-app-frontend-mnsu.onrender.com")); // ✅ Разрешаем только фронт https://teacher-app-frontend-mnsu.onrender.com
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:10000",  // Фронт в деве
+                "https://teacher-app-frontend-mnsu.onrender.com" // Фронт в проде
+        )); // ✅ Разрешаем фронт
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ Разрешаем нужные методы
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Разрешаем заголовки
+        //configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Разрешаем заголовки
+        configuration.setAllowedHeaders(List.of("*")); // ✅ Разрешаем все заголовки
         configuration.setAllowCredentials(true); // ✅ Разрешаем отправку cookies и токенов
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

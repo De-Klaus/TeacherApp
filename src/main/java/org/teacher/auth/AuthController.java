@@ -73,16 +73,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-    /*private final UserService userService;
-
-    @PostMapping("/register")
-    public User register(@RequestBody RegisterRequest request) {
-        return userService.registerUser(request.getName(), request.getEmail(), request.getPassword());
-    }
-
-    @PostMapping("/login")
-    public User login(@RequestBody LoginRequest request) {
-        return userService.login(request.getEmail(), request.getPassword());
-    }*/
 }
