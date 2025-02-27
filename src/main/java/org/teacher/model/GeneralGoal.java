@@ -6,11 +6,11 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "lesson")
+@Table(name = "general_goal")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lesson {
+public class GeneralGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,11 +18,9 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
-    private LocalDate lessonDate;
-    private String topic;
-    private String links;
-    private String assignment;
-    private String homework;
+    private String goal;
+    private String result;
+    private String partingReason;
+    private LocalDate recordDate;
     private int isActual;
-
 }
