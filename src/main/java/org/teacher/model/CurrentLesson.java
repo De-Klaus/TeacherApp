@@ -20,10 +20,11 @@ public class CurrentLesson {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "lesson_id")
+    @JoinColumn(name = "last_lesson_id")  // Указываем уникальное имя колонки
     private Lesson lastLesson;
+
     @ManyToOne
-    @JoinColumn(name = "lesson_id")
+    @JoinColumn(name = "future_lesson_id")  // Указываем уникальное имя колонки
     private Lesson futureLesson;
     private String previousLessonTopic;
     private String currentLessonTopic;
