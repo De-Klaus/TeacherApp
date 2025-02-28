@@ -20,6 +20,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.teacher.component.JwtAuthenticationFilter;
+import org.teacher.service.JwtService;
 
 import java.util.List;
 
@@ -88,6 +90,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(5);
     }
 
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        return new JwtAuthenticationFilter(jwtService, userDetailsService);
+    }
 
 
 }
