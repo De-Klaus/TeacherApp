@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import org.springframework.web.cors.CorsConfiguration;
@@ -50,7 +51,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         return  http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
                 .csrf(AbstractHttpConfigurer::disable) // ✅ Отключаем CSRF (если используешь JWT)
@@ -59,9 +60,10 @@ public class SecurityConfig {
                         .requestMatchers("/students").authenticated()  // ✅ Требуем авторизацию для /students
                         .requestMatchers("students/**").authenticated()
                         .requestMatchers("teacher/**") // Доступ только для авторизованных
-                        .authenticated()
-                ) // Закрываем все остальные пути
+                        .authenticated() // Закрываем все остальные пути
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Если используешь JWT
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 Добавляем фильтр JWT
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable) // ✅ Отключаем форму логина
                 //.logout(AbstractHttpConfigurer::disable) // ✅ Отключаем логаут
                 .logout(logout -> logout.logoutUrl("/auth/logout").permitAll()) // ✅ Возможность логаута, но без формы входа
