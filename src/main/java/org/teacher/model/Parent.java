@@ -17,4 +17,8 @@ public class Parent {
     private String firstName;
     private String lastName;
     private String middleName;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

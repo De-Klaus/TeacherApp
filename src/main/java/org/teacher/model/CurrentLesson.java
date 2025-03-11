@@ -29,4 +29,8 @@ public class CurrentLesson {
     private String previousLessonTopic;
     private String currentLessonTopic;
     private LocalDate createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

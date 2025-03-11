@@ -23,4 +23,8 @@ public class GeneralGoal {
     private String partingReason;
     private LocalDate recordDate;
     private int isActual;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

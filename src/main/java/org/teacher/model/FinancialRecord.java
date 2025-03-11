@@ -19,4 +19,8 @@ public class FinancialRecord {
     private double otherIncome;
     private double expenses;
     private double profit;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

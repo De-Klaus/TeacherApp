@@ -19,4 +19,8 @@ public class Promotion {
     private LocalDate createdAt;
     private int isActual;
 
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
+
 }

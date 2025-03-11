@@ -47,4 +47,8 @@ public class Student {
     @Min(value = 1, message = "Current grade must be at least 1")
     @Max(value = 12, message = "Current grade must be at most 12")
     private int currentGrade;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

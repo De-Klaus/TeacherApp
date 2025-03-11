@@ -22,4 +22,8 @@ public class StudentEnvironment {
     private String comment;
     private LocalDate createdAt;
     private int isActual;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

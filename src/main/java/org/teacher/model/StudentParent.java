@@ -20,4 +20,8 @@ public class StudentParent {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Parent parent;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

@@ -25,4 +25,8 @@ public class Lesson {
     private String homework;
     private int isActual;
 
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
+
 }

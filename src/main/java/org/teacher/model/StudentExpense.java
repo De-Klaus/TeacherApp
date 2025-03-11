@@ -22,4 +22,8 @@ public class StudentExpense {
     private double cost;
     private String comment;
     private LocalDate purchaseDate;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }

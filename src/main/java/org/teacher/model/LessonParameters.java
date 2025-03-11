@@ -32,4 +32,8 @@ public class LessonParameters {
     private LocalDate recordDate;
     private LocalDate deletionDate;
     private int isActual;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacherId;
 }
