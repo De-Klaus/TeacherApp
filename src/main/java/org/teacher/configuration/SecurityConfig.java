@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // ✅ Отключаем CSRF (если используешь JWT)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/users","teacher/welcome").permitAll() // Вход без авторизации
+                        .requestMatchers("/teacher/**").hasRole("TEACHER") // 👈 Доступ к /teacher только для учителей
                         .requestMatchers("/students", "/students/create", "/students/{id}").authenticated()  // ✅ Требуем авторизацию для /students
                         .requestMatchers("teacher/**") // Доступ только для авторизованных
                         .authenticated() // Закрываем все остальные пути

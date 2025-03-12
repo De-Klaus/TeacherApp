@@ -22,12 +22,11 @@ public class User {
     private String username;
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private User teacherId;
-
+    private User teacher; // 👈 Если это ученик, у него будет учитель
 }
