@@ -24,7 +24,7 @@ public class LessonParameters {
     private String lessonFrequency;
     @ManyToOne
     @JoinColumn(name = "currency_id")
-    private Currencies currency;
+    private Currency currency;
     @ManyToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;

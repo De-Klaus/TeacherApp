@@ -19,7 +19,7 @@ public class Tariff {
     private Long durationMinutes;
     @ManyToOne
     @JoinColumn(name = "currency_id")
-    private Currencies currency;
+    private Currency currency;
     private String comment;
     private LocalDate createdAt;
     private int isActual;

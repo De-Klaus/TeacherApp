@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Currencies {
+public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

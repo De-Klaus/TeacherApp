@@ -14,25 +14,4 @@ public class TeacherApplication {
     public static void main(String[] args) {
         SpringApplication.run(TeacherApplication.class, args);
     }
-
-    /*@RestController
-    public static class TeacherApplicationController {
-
-        @Autowired
-        private TeacherRepository teacherRepository;
-
-        @GetMapping("/teacher")
-        public String teacher() {
-
-            Teacher teacher = new Teacher("John D");
-            teacherRepository.save(teacher);
-
-            return "You are a teacher!";
-        }
-
-        @GetMapping("/")
-        public String hello() {
-            return "Hello Teacher!";
-        }
-    }*/
 }
