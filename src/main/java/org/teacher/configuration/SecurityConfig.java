@@ -57,6 +57,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
                 .csrf(AbstractHttpConfigurer::disable) // ✅ Отключаем CSRF (если используешь JWT)
                 .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // ⛔️ Все запросы разрешены
+                )
+                /*.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/users","teacher/welcome").permitAll() // Вход без авторизации
                         .requestMatchers("/teacher/**").hasAnyRole("USER","TEACHER") // 👈 Доступ к /teacher только для учителей
                         .requestMatchers("/students", "/students/create", "/students/{id}").hasAnyRole("USER","TEACHER", "ADMIN")  // ✅ Требуем авторизацию для /students
@@ -69,9 +72,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/students/**").hasAnyRole("USER","TEACHER","ADMIN")
 
                         .anyRequest().authenticated() // Закрываем все остальные пути
-                )
+                )*/
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Если используешь JWT
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 Добавляем фильтр JWT
+                //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 Добавляем фильтр JWT
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable) // ✅ Отключаем форму логина
                 //.logout(AbstractHttpConfigurer::disable) // ✅ Отключаем логаут
                 .logout(logout -> logout.logoutUrl("/auth/logout").permitAll()) // ✅ Возможность логаута, но без формы входа
