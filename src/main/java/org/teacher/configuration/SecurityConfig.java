@@ -2,6 +2,7 @@ package org.teacher.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -58,9 +59,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/users","teacher/welcome").permitAll() // Вход без авторизации
                         .requestMatchers("/teacher/**").hasRole("TEACHER") // 👈 Доступ к /teacher только для учителей
-                        .requestMatchers("/students", "/students/create", "/students/{id}").authenticated()  // ✅ Требуем авторизацию для /students
-                        .requestMatchers("teacher/**") // Доступ только для авторизованных
-                        .authenticated() // Закрываем все остальные пути
+                        .requestMatchers("/students", "/students/create", "/students/{id}").hasAnyRole("TEACHER", "ADMIN")  // ✅ Требуем авторизацию для /students
+                        .requestMatchers("teacher/**").hasAnyRole("TEACHER", "ADMIN") // Доступ только для авторизованных
+
+                        // Spring Data REST endpoints
+                        .requestMatchers(HttpMethod.GET, "/students/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/students/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/students/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/students/**").hasRole("ADMIN")
+
+                        .anyRequest().authenticated() // Закрываем все остальные пути
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Если используешь JWT
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 Добавляем фильтр JWT

@@ -26,7 +26,7 @@ public class TariffService {
             throw new AccessDeniedException("User is not a teacher");
         }
 
-        return tariffRepository.findByCreatedBy(teacher);
+        return tariffRepository.findByTeacherId(teacher);
     }
 }
 

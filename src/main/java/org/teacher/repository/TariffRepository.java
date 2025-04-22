@@ -9,6 +9,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface TariffRepository extends JpaRepository<Tariff, Long> {
-    List<Tariff> findByCreatedBy(User teacherId);
+    List<Tariff> findByTeacherId(User teacher);
 }
 
