@@ -85,6 +85,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",
                 "http://localhost:10000",  // Фронт в деве
                 "https://teacher-app-frontend-mnsu.onrender.com" // Фронт в проде
         )); // ✅ Разрешаем фронт
