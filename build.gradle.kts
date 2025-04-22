@@ -18,6 +18,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
     // Шифрование паролей
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.postgresql:postgresql")

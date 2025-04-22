@@ -1,6 +1,7 @@
 package org.teacher.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @NotBlank(message = "First name is required")
