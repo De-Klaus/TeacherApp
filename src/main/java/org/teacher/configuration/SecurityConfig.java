@@ -58,15 +58,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // ✅ Отключаем CSRF (если используешь JWT)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/users","teacher/welcome").permitAll() // Вход без авторизации
-                        .requestMatchers("/teacher/**").hasRole("TEACHER") // 👈 Доступ к /teacher только для учителей
-                        .requestMatchers("/students", "/students/create", "/students/{id}").hasAnyRole("TEACHER", "ADMIN")  // ✅ Требуем авторизацию для /students
-                        .requestMatchers("teacher/**").hasAnyRole("TEACHER", "ADMIN") // Доступ только для авторизованных
+                        .requestMatchers("/teacher/**").hasAnyRole("USER","TEACHER") // 👈 Доступ к /teacher только для учителей
+                        .requestMatchers("/students", "/students/create", "/students/{id}").hasAnyRole("USER","TEACHER", "ADMIN")  // ✅ Требуем авторизацию для /students
+                        .requestMatchers("teacher/**").hasAnyRole("USER","TEACHER", "ADMIN") // Доступ только для авторизованных
 
                         // Spring Data REST endpoints
-                        .requestMatchers(HttpMethod.GET, "/students/**").hasAnyRole("TEACHER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/students/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/students/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/students/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/students/**").hasAnyRole("USER","TEACHER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/students/**").hasAnyRole("USER","TEACHER","ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/students/**").hasAnyRole("USER","TEACHER","ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/students/**").hasAnyRole("USER","TEACHER","ADMIN")
 
                         .anyRequest().authenticated() // Закрываем все остальные пути
                 )
