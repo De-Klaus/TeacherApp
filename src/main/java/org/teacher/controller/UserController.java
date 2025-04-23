@@ -1,29 +1,17 @@
 package org.teacher.controller;
 
-import org.springframework.http.ResponseEntity;
-import lombok.*;
-import org.springframework.web.bind.annotation.*;
-import org.teacher.dto.UserDTO;
-import org.teacher.service.UserService;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.teacher.model.User;
+import org.teacher.repository.UserRepository;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class UserController extends BaseController<User, Long> {
 
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public UserController(UserRepository repository) {
+        super(repository, "users");
     }
 
-
-    /*@PostMapping("/users")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user.getEmail(), user.getPassword()));
-    }*/
 }
