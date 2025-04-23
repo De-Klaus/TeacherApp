@@ -1,32 +1,15 @@
 package org.teacher.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.teacher.model.Student;
 import org.teacher.model.Tariff;
-import org.teacher.service.TariffService;
-
-import java.util.List;
+import org.teacher.repository.TariffRepository;
 
 @RestController
 @RequestMapping("/tariffs")
-@RequiredArgsConstructor
-public class TariffController {
-    private final TariffService tariffService;
+public class TariffController extends BaseController<Tariff, Long> {
 
-    @GetMapping
-    public ResponseEntity<List<Tariff>> getAllStudents() {
-        return ResponseEntity.ok(tariffService.getAllTariffs());
+    public TariffController(TariffRepository repository) {
+        super(repository, "tariffs");
     }
-
-    /*@GetMapping("/my")
-    public ResponseEntity<List<Tariff>> getMyTariffs(@AuthenticationPrincipal UserDetails userDetails) {
-        List<Tariff> tariffs = tariffService.getTariffsForTeacher(userDetails.getUsername());
-        return ResponseEntity.ok(tariffs);
-    }*/
 }
