@@ -1,8 +1,11 @@
 package org.teacher.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -26,7 +29,8 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private User teacher; // 👈 Если это ученик, у него будет учитель
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @Builder.Default
+    private List<Teacher> teachers = new ArrayList<>();
 }

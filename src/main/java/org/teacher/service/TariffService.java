@@ -5,6 +5,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.teacher.model.Role;
+import org.teacher.model.Student;
 import org.teacher.model.Tariff;
 import org.teacher.model.User;
 import org.teacher.repository.TariffRepository;
@@ -18,7 +19,7 @@ public class TariffService {
     private final TariffRepository tariffRepository;
     private final UserRepository userRepository;
 
-    public List<Tariff> getTariffsForTeacher(String username) {
+    /*public List<Tariff> getTariffsForTeacher(String username) {
         User teacher = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -27,6 +28,10 @@ public class TariffService {
         }
 
         return tariffRepository.findByTeacherId(teacher);
+    }*/
+
+    public List<Tariff> getAllTariffs() {
+        return tariffRepository.findAll();
     }
 }
 

@@ -31,7 +31,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("userId", user.getId()) // Каждый получает свой ID
-                .claim("teacherId", user.getTeacher() != null ? user.getTeacher().getId() : null) // Только для учеников
+                //.claim("teacherId", user.getTeacher() != null ? user.getTeacher().getId() : null) // Только для учеников
                 .claim("roles", user.getRoles().stream().map(Role::name).toList()) // Добавляем все роли
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 день

@@ -7,26 +7,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.teacher.model.Student;
+import org.teacher.model.Currency;
 import org.teacher.model.Tariff;
+import org.teacher.service.CurrencyService;
 import org.teacher.service.TariffService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/tariffs")
+@RequestMapping("/currencies")
 @RequiredArgsConstructor
-public class TariffController {
-    private final TariffService tariffService;
+public class CurrencyController {
+    private final CurrencyService currencyService;
 
     @GetMapping
-    public ResponseEntity<List<Tariff>> getAllStudents() {
-        return ResponseEntity.ok(tariffService.getAllTariffs());
+    public ResponseEntity<List<Currency>> getAllCurrencies() {
+        return ResponseEntity.ok(currencyService.getAllCurrencies());
     }
 
-    /*@GetMapping("/my")
-    public ResponseEntity<List<Tariff>> getMyTariffs(@AuthenticationPrincipal UserDetails userDetails) {
-        List<Tariff> tariffs = tariffService.getTariffsForTeacher(userDetails.getUsername());
-        return ResponseEntity.ok(tariffs);
-    }*/
 }

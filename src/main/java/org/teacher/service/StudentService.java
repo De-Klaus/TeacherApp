@@ -14,6 +14,31 @@ import java.util.List;
 public class StudentService {
     private final StudentRepository studentRepository;
 
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
+
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
+    }
+
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public Student update(Long id, Student updated) {
+        Student existing = findById(id);
+        updated.setId(existing.getId());
+        return studentRepository.save(updated);
+    }
+
+    public void delete(Long id) {
+        studentRepository.deleteById(id);
+    }
+
+    //////////////////////////////////
+
     public Student getStudentById(Long id) {
         return studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
     }
