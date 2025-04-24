@@ -19,8 +19,7 @@ public class Teacher {
     private Long id;
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // внешний ключ в таблице teacher
-    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }

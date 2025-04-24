@@ -28,9 +28,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    @Builder.Default
-    private List<Teacher> teachers = new ArrayList<>();
 }

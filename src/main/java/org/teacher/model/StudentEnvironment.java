@@ -25,5 +25,5 @@ public class StudentEnvironment {
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private User teacherId;
+    private User teacher;
 }
