@@ -53,4 +53,6 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private User teacher;
+
+    private String color;
 }

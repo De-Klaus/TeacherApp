@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "lesson")
@@ -18,7 +19,7 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
-    private LocalDate lessonDate;
+    private LocalDateTime lessonDate;
     private String topic;
     private String links;
     private String assignment;
