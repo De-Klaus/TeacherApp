@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "3.2.2"
+    id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.4"
     id("java")
 }
@@ -19,21 +19,21 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
     // Шифрование паролей
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.postgresql:postgresql")
     implementation("org.projectlombok:lombok")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    annotationProcessor("org.projectlombok:lombok")
+
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
     testImplementation("com.h2database:h2:2.2.224")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    annotationProcessor("org.projectlombok:lombok")
-
-
 
 }
 

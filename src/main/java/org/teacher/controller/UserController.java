@@ -2,7 +2,7 @@ package org.teacher.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.teacher.model.User;
+import org.teacher.entity.User;
 import org.teacher.repository.UserRepository;
 
 @RestController
