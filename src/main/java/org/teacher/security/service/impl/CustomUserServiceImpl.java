@@ -1,10 +1,11 @@
-package org.teacher.security;
+package org.teacher.security.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.teacher.repository.UserRepository;
+import org.teacher.security.CustomUserDetails;
 
 @Service
 @RequiredArgsConstructor

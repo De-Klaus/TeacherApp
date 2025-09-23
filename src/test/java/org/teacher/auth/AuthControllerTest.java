@@ -10,6 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.teacher.dto.JwtAuthenticationDto;
+import org.teacher.dto.RefreshTokenDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.security.jwt.JwtService;
 
@@ -64,7 +65,54 @@ class AuthControllerTest {
     }
 
     @Test
-    void refreshTest() {
+    @Sql(scripts = {"/data/cleanUp.sql", "/data/insertData.sql"})
+    void shouldReturnRefreshJwtToken_whenCredentialsAreValid() throws Exception {
+        UserCredentialsDto userCredentialsDto = new UserCredentialsDto("test@gmail.com", "12345");
 
+        String userJson = objectMapper.writeValueAsString(userCredentialsDto);
+
+        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        RefreshTokenDto refreshTokenDto = new RefreshTokenDto(objectMapper
+                .readValue(tokenJson, JwtAuthenticationDto.class)
+                .refreshToken());
+
+        String refreshTokenJson = objectMapper.writeValueAsString(refreshTokenDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(refreshTokenJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Sql(scripts = {"/data/cleanUp.sql", "/data/insertData.sql"})
+    void shouldThrowAuthenticationRefreshException_whenCredentialsAreInvalid() throws Exception {
+        UserCredentialsDto userCredentialsDto = new UserCredentialsDto("test@gmail.com", "12345");
+
+        String userJson = objectMapper.writeValueAsString(userCredentialsDto);
+        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JwtAuthenticationDto jwtDto = objectMapper.readValue(tokenJson, JwtAuthenticationDto.class);
+
+        // Подменяем refresh token
+        RefreshTokenDto invalidRefreshTokenDto = new RefreshTokenDto(jwtDto.refreshToken() + "tampered");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRefreshTokenDto)))
+                .andExpect(status().isUnauthorized());
     }
 }

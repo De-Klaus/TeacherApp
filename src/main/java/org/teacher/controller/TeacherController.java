@@ -6,11 +6,11 @@ import org.teacher.entity.User;
 import org.teacher.repository.UserRepository;
 
 @RestController
-@RequestMapping("/users")
-public class UserController extends BaseController<User, Long> {
+@RequestMapping("/teachers")
+public class TeacherController extends BaseController<User, Long> {
 
 
-    public UserController(UserRepository repository) {
+    public TeacherController(UserRepository repository) {
         super(repository, "users");
     }
 

@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.teacher.security.CustomUserDetails;
-import org.teacher.security.CustomUserServiceImpl;
+import org.teacher.security.service.impl.CustomUserServiceImpl;
 
 import java.io.IOException;
 

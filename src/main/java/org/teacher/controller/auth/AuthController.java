@@ -1,4 +1,4 @@
-package org.teacher.auth;
+package org.teacher.controller.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,12 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public JwtAuthenticationDto refresh(@RequestBody RefreshTokenDto refreshTokenDto) throws Exception {
-        return userService.refreshToken(refreshTokenDto);
+    public ResponseEntity<JwtAuthenticationDto> refresh(@RequestBody RefreshTokenDto refreshTokenDto) {
+        try {
+            JwtAuthenticationDto jwtAuthenticationDto = userService.refreshToken(refreshTokenDto);
+            return ResponseEntity.ok(jwtAuthenticationDto);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 }
