@@ -2,13 +2,11 @@ package org.teacher.controller.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
-import org.teacher.entity.User;
 import org.teacher.mapper.UserMapper;
 import org.teacher.service.UserService;
 
@@ -23,35 +21,27 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @PostMapping("/registration")
+    @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userDto) {
-        User user = userService.addUser(userDto);
-        UserResponseDto responseDto = userMapper.toResponseDto(user);
+        UserResponseDto responseDto = userService.addUser(userDto);
         return ResponseEntity
-                .created(URI.create("/users/" + user.getUserId()))
+                .created(URI.create("/users/" + responseDto.id()))
                 .body(responseDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) throws ChangeSetPersister.NotFoundException {
-        try {
-            UserRequestDto userDto = userService.getUserById(id);
-            UserResponseDto responseDto = userMapper.toResponseDto(userDto);
-            return ResponseEntity.ok(responseDto);
-        } catch (ChangeSetPersister.NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) throws ChangeSetPersister.NotFoundException {
-        try {
-            UserRequestDto userDto = userService.getUserByEmail(email);
-            UserResponseDto responseDto = userMapper.toResponseDto(userDto);
-            return ResponseEntity.ok(responseDto);
-        } catch (ChangeSetPersister.NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    //GET /users?email=test@gmail.com
+    @GetMapping
+    public ResponseEntity<UserResponseDto> getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler(Exception.class)

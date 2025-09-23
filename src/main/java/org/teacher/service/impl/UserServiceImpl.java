@@ -1,7 +1,6 @@
 package org.teacher.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,13 +8,16 @@ import org.teacher.dto.JwtAuthenticationDto;
 import org.teacher.dto.RefreshTokenDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
+import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.User;
+import org.teacher.exception.DuplicateUserException;
 import org.teacher.mapper.UserMapper;
 import org.teacher.repository.UserRepository;
 import org.teacher.security.jwt.JwtService;
 import org.teacher.service.UserService;
 
 import javax.naming.AuthenticationException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -45,24 +47,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRequestDto getUserById(UUID id) throws ChangeSetPersister.NotFoundException {
-        return userMapper.toDto(userRepository.findByUserId(id)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new));
+    public Optional<UserResponseDto> getUserById(UUID id) {
+        return userRepository.findByUserId(id)
+                .map(userMapper::toResponseDto);
     }
 
     @Override
     @Transactional
-    public UserRequestDto getUserByEmail(String email) throws ChangeSetPersister.NotFoundException {
-        return userMapper.toDto(userRepository.findByEmail(email)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new));
+    public Optional<UserResponseDto> getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                        .map(userMapper::toResponseDto);
     }
 
     @Override
-    public User addUser(UserRequestDto userDto){
+    public UserResponseDto addUser(UserRequestDto userDto){
+        if (userRepository.existsByEmail(userDto.email())) {
+            throw new DuplicateUserException("User with email already exists: " + userDto.email());
+        }
         User user = userMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return user;
+        return userMapper.toResponseDto(user);
     }
 
     private User findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
