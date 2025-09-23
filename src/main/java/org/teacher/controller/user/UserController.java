@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
+import org.teacher.entity.User;
+import org.teacher.mapper.UserMapper;
 import org.teacher.service.UserService;
 
 import java.net.URI;
@@ -19,18 +21,14 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping("/registration")
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userDto) {
-        UUID id = userService.addUser(userDto);
-        UserResponseDto responseDto = new UserResponseDto(
-                id,
-                userDto.email(),
-                userDto.firstName(),
-                userDto.lastName()
-        );
+        User user = userService.addUser(userDto);
+        UserResponseDto responseDto = userMapper.toResponseDto(user);
         return ResponseEntity
-                .created(URI.create("/users/" + id))
+                .created(URI.create("/users/" + user.getUserId()))
                 .body(responseDto);
     }
 
@@ -38,12 +36,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable UUID id) throws ChangeSetPersister.NotFoundException {
         try {
             UserRequestDto userDto = userService.getUserById(id);
-            UserResponseDto responseDto = new UserResponseDto(
-                    id,
-                    userDto.email(),
-                    userDto.firstName(),
-                    userDto.lastName()
-            );
+            UserResponseDto responseDto = userMapper.toResponseDto(userDto);
             return ResponseEntity.ok(responseDto);
         } catch (ChangeSetPersister.NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -54,12 +47,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) throws ChangeSetPersister.NotFoundException {
         try {
             UserRequestDto userDto = userService.getUserByEmail(email);
-            UserResponseDto responseDto = new UserResponseDto(
-                    userDto.userId(),
-                    userDto.email(),
-                    userDto.firstName(),
-                    userDto.lastName()
-            );
+            UserResponseDto responseDto = userMapper.toResponseDto(userDto);
             return ResponseEntity.ok(responseDto);
         } catch (ChangeSetPersister.NotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -5,6 +5,7 @@ import org.teacher.dto.JwtAuthenticationDto;
 import org.teacher.dto.RefreshTokenDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
+import org.teacher.entity.User;
 
 import javax.naming.AuthenticationException;
 import java.util.UUID;
@@ -19,5 +20,5 @@ public interface UserService {
 
     UserRequestDto getUserByEmail(String email) throws ChangeSetPersister.NotFoundException;
 
-    UUID addUser(UserRequestDto user);
+    User addUser(UserRequestDto user);
 }

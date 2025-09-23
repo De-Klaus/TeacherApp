@@ -58,11 +58,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UUID addUser(UserRequestDto userDto){
+    public User addUser(UserRequestDto userDto){
         User user = userMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return user.getUserId();
+        return user;
     }
 
     private User findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
