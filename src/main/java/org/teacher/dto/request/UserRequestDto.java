@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;
 
 public record UserRequestDto(
-        UUID userId,
         String firstName,
         String lastName,
         @NotBlank @Email String email,

@@ -1,11 +1,17 @@
 package org.teacher.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.TypeMismatchException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentConversionNotSupportedException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,6 +19,27 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<String> handleTypeMismatch(HandlerMethodValidationException ex) {
+        return ResponseEntity.badRequest().body("Invalid parameter: " + ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            MethodArgumentTypeMismatchException.class,
+            ConversionFailedException.class,
+            MethodArgumentConversionNotSupportedException.class,
+            NumberFormatException.class,
+            TypeMismatchException.class,
+            HttpMessageNotReadableException.class
+    })
+    public ResponseEntity<ApiErrorResponse> handleConversionErrors(Exception ex, HttpServletRequest request) {
+        return buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Invalid path or request parameter",
+                request.getRequestURI()
+        );
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleUserNotFound(
@@ -61,7 +88,9 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return buildErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request.getRequestURI()
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                request.getRequestURI()
         );
     }
 
@@ -78,3 +107,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 }
+

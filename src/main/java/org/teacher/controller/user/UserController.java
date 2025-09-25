@@ -1,7 +1,9 @@
 package org.teacher.controller.user;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,18 +38,13 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    //GET /users?email=test@gmail.com
     @GetMapping
-    public ResponseEntity<UserResponseDto> getUserByEmail(@RequestParam String email) {
+    public ResponseEntity<UserResponseDto> getUserByEmail(
+            @RequestParam
+            @NotBlank(message = "Email is required")
+            @Email(message = "Invalid email format") String email) {
         return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleExceptions(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("An unexpected error occurred: " + e.getMessage());
     }
 }
