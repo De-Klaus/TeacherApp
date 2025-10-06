@@ -1,0 +1,85 @@
+package org.teacher.service.impl;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.teacher.dto.LessonDto;
+import org.teacher.entity.*;
+import org.teacher.mapper.LessonMapper;
+import org.teacher.repository.LessonRepository;
+import org.teacher.repository.StudentRepository;
+import org.teacher.repository.StudentTeacherRepository;
+import org.teacher.service.LessonService;
+import org.teacher.service.StudentTeacherService;
+import org.teacher.service.TeacherService;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class LessonServiceImpl implements LessonService {
+
+    private final StudentRepository studentRepository;
+    private final TeacherService teacherService;
+    private final StudentTeacherRepository studentTeacherRepository;
+    private final LessonRepository lessonRepository;
+    private final StudentTeacherService studentTeacherService;
+    private final LessonMapper lessonMapper;
+
+    @Override
+    @Transactional
+    public LessonDto addLesson(LessonDto lessonDto) {
+        Lesson lesson = lessonMapper.toEntity(lessonDto);
+
+        if(lesson.getTeacher()==null){
+            studentTeacherService.findActiveByStudent(lesson.getStudent().getStudentId())
+                    .ifPresent(st -> {
+                        lesson.setTeacher(st.getTeacher());
+                    });
+        }
+
+        if (lesson.getPrice() == null) {
+            studentTeacherService.findActiveByStudentAndTeacher(
+                    lesson.getStudent().getStudentId(), lesson.getTeacher().getTeacherId())
+                    .ifPresent(st -> lesson.setPrice(st.getAgreedRate()));
+        }
+        Lesson saved = lessonRepository.save(lesson);
+        return lessonMapper.toDto(saved);
+    }
+
+    @Override
+    public Optional<LessonDto> getById(Long lessonId) {
+        return lessonRepository.findById(lessonId)
+                .map(lessonMapper::toDto);
+    }
+
+    @Override
+    public List<LessonDto> getAll() {
+        return lessonRepository.findAll().stream()
+                .map(lessonMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public LessonDto update(Long lessonId, LessonDto dto) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new EntityNotFoundException("Lesson not found: " + lessonId));
+
+        lesson.setScheduledAt(dto.scheduledAt());
+        lesson.setDurationMinutes(dto.durationMinutes());
+        lesson.setPrice(dto.price());
+        lesson.setStatus(dto.status());
+        lesson.setHomework(dto.homework());
+        lesson.setFeedback(dto.feedback());
+
+        Lesson saved = lessonRepository.save(lesson);
+        return lessonMapper.toDto(saved);
+    }
+
+    @Override
+    public void delete(Long lessonId) {
+        lessonRepository.deleteById(lessonId);
+    }
+}

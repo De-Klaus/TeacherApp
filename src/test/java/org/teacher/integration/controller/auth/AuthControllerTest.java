@@ -1,4 +1,4 @@
-package org.teacher.auth;
+package org.teacher.integration.controller.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

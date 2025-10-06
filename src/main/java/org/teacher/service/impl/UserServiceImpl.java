@@ -17,6 +17,7 @@ import org.teacher.security.jwt.JwtService;
 import org.teacher.service.UserService;
 
 import javax.naming.AuthenticationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,6 +58,13 @@ public class UserServiceImpl implements UserService {
     public Optional<UserResponseDto> getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                         .map(userMapper::toResponseDto);
+    }
+
+    @Override
+    public List<UserResponseDto> getAll() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toResponseDto)
+                .toList();
     }
 
     @Override

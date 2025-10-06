@@ -1,4 +1,4 @@
-package org.teacher.controller.user;
+package org.teacher.integration.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.teacher.dto.JwtAuthenticationDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
+import org.teacher.entity.Role;
+import org.springframework.http.HttpHeaders;
+
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +54,8 @@ class UserControllerTest {
                 "test",
                 "tes1",
                 "te@gmail.com",
-                "111222333"
+                "111222333",
+                Set.of(Role.STUDENT)
         );
 
         String userJson = objectMapper.writeValueAsString(userDto);
@@ -66,7 +71,7 @@ class UserControllerTest {
     void shouldReturnUserById_whenUserExists() throws Exception {
         String token = getAccessToken();
         mockMvc.perform(MockMvcRequestBuilders.get("/users/550e8400-e29b-41d4-a716-446655440000")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@gmail.com"));
 
@@ -77,7 +82,7 @@ class UserControllerTest {
     void shouldReturnUserById_whenUserNotExists() throws Exception {
         String token = getAccessToken();
         mockMvc.perform(MockMvcRequestBuilders.get("/users/550e8400-e29b-41d4-a716-446655441111")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isNotFound());
 
     }
@@ -87,7 +92,7 @@ class UserControllerTest {
     void shouldReturnUserById_whenUserIdIsWrong() throws Exception {
         String token = getAccessToken();
         mockMvc.perform(MockMvcRequestBuilders.get("/users/abc")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isBadRequest());
 
     }
@@ -99,7 +104,7 @@ class UserControllerTest {
         String token = getAccessToken();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users?email=test@gmail.com")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@gmail.com"));
 
@@ -112,7 +117,7 @@ class UserControllerTest {
         String token = getAccessToken();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users?email=test_1@gmail.com")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isNotFound());
 
     }
@@ -123,7 +128,7 @@ class UserControllerTest {
         String token = getAccessToken();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users?email=")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isBadRequest());
 
     }
@@ -134,7 +139,7 @@ class UserControllerTest {
         String token = getAccessToken();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users?email=test_1@gmail.comtest_1@gmail.com")
-                        .header("Authorization", "Bearer " + token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isBadRequest());
 
     }

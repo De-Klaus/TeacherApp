@@ -4,12 +4,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
-import org.teacher.mapper.UserMapper;
 import org.teacher.service.UserService;
 
 import java.net.URI;
@@ -21,13 +19,12 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userDto) {
         UserResponseDto responseDto = userService.addUser(userDto);
         return ResponseEntity
-                .created(URI.create("/users/" + responseDto.id()))
+                .created(URI.create("/users/" + responseDto.userId()))
                 .body(responseDto);
     }
 
