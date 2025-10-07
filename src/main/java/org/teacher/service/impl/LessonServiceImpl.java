@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teacher.dto.LessonDto;
 import org.teacher.entity.*;
+import org.teacher.kafka.message.LessonCompletedEvent;
+import org.teacher.kafka.producer.LessonCompletedEventProducer;
 import org.teacher.mapper.LessonMapper;
 import org.teacher.repository.LessonRepository;
 import org.teacher.repository.StudentRepository;
@@ -14,6 +16,7 @@ import org.teacher.service.LessonService;
 import org.teacher.service.StudentTeacherService;
 import org.teacher.service.TeacherService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,7 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
     private final StudentTeacherService studentTeacherService;
     private final LessonMapper lessonMapper;
+    private final LessonCompletedEventProducer lessonEventProducer;
 
     @Override
     @Transactional
@@ -46,6 +50,15 @@ public class LessonServiceImpl implements LessonService {
                     .ifPresent(st -> lesson.setPrice(st.getAgreedRate()));
         }
         Lesson saved = lessonRepository.save(lesson);
+
+        lessonEventProducer.send(new LessonCompletedEvent(
+                saved.getLessonId(),
+                saved.getStudent().getStudentId(),
+                saved.getTeacher().getTeacherId(),
+                saved.getPrice(),
+                saved.getDurationMinutes()
+        ));
+
         return lessonMapper.toDto(saved);
     }
 

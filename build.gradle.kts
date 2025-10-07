@@ -19,7 +19,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.springframework.kafka:spring-kafka")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    //WhatsAppClient
+    implementation("com.twilio.sdk:twilio:8.31.1")
     // Шифрование паролей
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.postgresql:postgresql")
@@ -34,7 +37,7 @@ dependencies {
 
     testImplementation("com.h2database:h2:2.2.224")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 
