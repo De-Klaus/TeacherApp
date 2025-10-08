@@ -13,7 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.teacher.security.jwt.JwtFilter;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,6 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -36,6 +42,24 @@ public class SecurityConfig {
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",   // Фронт в тесте
+                "http://localhost:10000",  // Фронт в деве
+                "https://teacher-app-frontend-mnsu.onrender.com" // Фронт в проде
+        )); // ✅ Разрешаем фронт
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ Разрешаем нужные методы
+        //configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Разрешаем заголовки
+        configuration.setAllowedHeaders(List.of("*")); // ✅ Разрешаем все заголовки
+        configuration.setAllowCredentials(true); // ✅ Разрешаем отправку cookies и токенов
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

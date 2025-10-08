@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.context.ActiveProfiles;
 import org.teacher.kafka.message.LessonCreatedEvent;
 import org.teacher.kafka.producer.LessonCreatedEventProducer;
 import org.teacher.service.ReminderService;
@@ -13,6 +14,7 @@ import org.teacher.service.ReminderService;
 import java.time.LocalDateTime;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @EmbeddedKafka(partitions = 1, topics = { "lessons.events" })
 class LessonEventConsumerIntegrationTest extends AbstractKafkaIntegrationTest {
 
