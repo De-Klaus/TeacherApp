@@ -9,6 +9,7 @@ import org.teacher.dto.RefreshTokenDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
+import org.teacher.entity.Role;
 import org.teacher.entity.User;
 import org.teacher.exception.DuplicateUserException;
 import org.teacher.mapper.UserMapper;
@@ -19,6 +20,7 @@ import org.teacher.service.UserService;
 import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -74,6 +76,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.USER));
         userRepository.save(user);
         return userMapper.toResponseDto(user);
     }
