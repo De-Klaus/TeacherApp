@@ -11,6 +11,7 @@ import org.teacher.service.TeacherService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,12 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Optional<TeacherDto> getById(Long teacherId) {
         return teacherRepository.findById(teacherId)
+                .map(teacherMapper::toDto);
+    }
+
+    @Override
+    public Optional<TeacherDto> findByUserId(UUID userId) {
+        return teacherRepository.findByUser_UserId(userId)
                 .map(teacherMapper::toDto);
     }
 

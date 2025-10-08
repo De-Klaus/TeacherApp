@@ -2,9 +2,13 @@ package org.teacher.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teacher.dto.LessonDto;
+import org.teacher.dto.StudentDto;
+import org.teacher.dto.TeacherDto;
+import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.*;
 import org.teacher.kafka.message.LessonCompletedEvent;
 import org.teacher.kafka.producer.LessonCompletedEventProducer;
@@ -12,9 +16,8 @@ import org.teacher.mapper.LessonMapper;
 import org.teacher.repository.LessonRepository;
 import org.teacher.repository.StudentRepository;
 import org.teacher.repository.StudentTeacherRepository;
-import org.teacher.service.LessonService;
-import org.teacher.service.StudentTeacherService;
-import org.teacher.service.TeacherService;
+import org.teacher.repository.TeacherRepository;
+import org.teacher.service.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,12 +28,15 @@ import java.util.Optional;
 public class LessonServiceImpl implements LessonService {
 
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
     private final TeacherService teacherService;
     private final StudentTeacherRepository studentTeacherRepository;
     private final LessonRepository lessonRepository;
     private final StudentTeacherService studentTeacherService;
     private final LessonMapper lessonMapper;
     private final LessonCompletedEventProducer lessonEventProducer;
+    private final AuthService authService;
 
     @Override
     @Transactional
@@ -70,9 +76,24 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDto> getAll() {
-        return lessonRepository.findAll().stream()
-                .map(lessonMapper::toDto)
-                .toList();
+        UserResponseDto currentUser = authService.getCurrentUser();
+        if (currentUser.hasRole(Role.TEACHER)) {
+            TeacherDto teacher = teacherService.findByUserId(currentUser.userId())
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher profile not found"));
+            return lessonRepository.findByTeacher_TeacherId(teacher.teacherId())
+                    .stream()
+                    .map(lessonMapper::toDto)
+                    .toList();
+        } else if (currentUser.hasRole(Role.STUDENT)) {
+            StudentDto student = studentService.findByUserId(currentUser.userId())
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher profile not found"));
+            return lessonRepository.findByStudent_StudentId(student.studentId())
+                    .stream()
+                    .map(lessonMapper::toDto)
+                    .toList();
+        } else {
+            throw new AccessDeniedException("Unauthorized role");
+        }
     }
 
     @Override

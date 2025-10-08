@@ -18,6 +18,7 @@ import org.teacher.service.StudentService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Optional<StudentDto> getById(Long studentId) {
         return studentRepository.findById(studentId)
+                .map(studentMapper::toDto);
+    }
+
+    @Override
+    public Optional<StudentDto> findByUserId(UUID userId) {
+        return studentRepository.findByUser_UserId(userId)
                 .map(studentMapper::toDto);
     }
 

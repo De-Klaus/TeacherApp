@@ -12,4 +12,7 @@ public record UserResponseDto(
         String lastName,
         Set<Role> roles
 ) {
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
+    }
 }
