@@ -78,7 +78,7 @@ public class JwtService {
     }
 
     private String generateJwtToken(User user) {
-        Date date = Date.from(LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault()).toInstant());
+        Date date = Date.from(LocalDateTime.now().plusMinutes(60).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .subject(String.valueOf(user.getUserId()))
                 .expiration(date) // token validity period
