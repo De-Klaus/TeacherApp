@@ -1,16 +1,16 @@
 package org.teacher.external.whatsapp;
 
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
+//import com.twilio.Twilio;
+//import com.twilio.rest.api.v2010.account.Message;
 import org.springframework.stereotype.Component;
 
-import com.twilio.type.PhoneNumber;
+//import com.twilio.type.PhoneNumber;
 import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class WhatsAppClient {
 
-    private final String fromNumber;
+    /*private final String fromNumber;
 
     public WhatsAppClient(@Value("${twilio.account.sid}") String accountSid,
                           @Value("${twilio.auth.token}") String authToken,
@@ -25,5 +25,5 @@ public class WhatsAppClient {
                 new PhoneNumber("whatsapp:" + fromNumber),
                 message
         ).create();
-    }
+    }*/
 }

@@ -22,7 +22,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     //WhatsAppClient
-    implementation("com.twilio.sdk:twilio:8.31.1")
+    /**/
     // Шифрование паролей
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.postgresql:postgresql")

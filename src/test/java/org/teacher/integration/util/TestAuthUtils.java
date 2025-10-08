@@ -19,7 +19,7 @@ public class TestAuthUtils {
     public static String obtainAccessToken(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password) throws Exception {
         String loginJson = objectMapper.writeValueAsString(new UserCredentialsDto(email,password));
 
-        String tokens = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+        String tokens = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
                 .andExpect(status().isOk())

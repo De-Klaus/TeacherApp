@@ -23,7 +23,7 @@ public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping("/sing-in")
+    @PostMapping("/sign-in")
     public ResponseEntity<JwtAuthenticationDto> singIn(@RequestBody UserCredentialsDto userCredentialsDto) {
         try {
             JwtAuthenticationDto jwtAuthenticationDto = userService.singIn(userCredentialsDto);

@@ -55,10 +55,10 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
             // Пример: отправляем студенту
-            whatsAppClient.sendMessage(studentPhone, message);
+            //whatsAppClient.sendMessage(studentPhone, message);
 
             // Пример: отправляем учителю
-            whatsAppClient.sendMessage(teacherPhone, message);
+            //whatsAppClient.sendMessage(teacherPhone, message);
 
             log.info("📢 WhatsApp reminders sent for lesson {}", event.lessonId());
         } catch (Exception e) {

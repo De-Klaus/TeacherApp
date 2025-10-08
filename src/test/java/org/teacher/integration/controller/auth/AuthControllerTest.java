@@ -40,7 +40,7 @@ class AuthControllerTest {
 
         String userJson = objectMapper.writeValueAsString(userCredentialsDto);
 
-        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
                 .andExpect(status().isOk())
@@ -60,7 +60,7 @@ class AuthControllerTest {
 
         String userJson = objectMapper.writeValueAsString(userCredentialsDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isUnauthorized());
@@ -73,7 +73,7 @@ class AuthControllerTest {
 
         String userJson = objectMapper.writeValueAsString(userCredentialsDto);
 
-        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isOk())
@@ -99,7 +99,7 @@ class AuthControllerTest {
         UserCredentialsDto userCredentialsDto = new UserCredentialsDto("test@gmail.com", "12345");
 
         String userJson = objectMapper.writeValueAsString(userCredentialsDto);
-        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sing-in")
+        String tokenJson = mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isOk())
