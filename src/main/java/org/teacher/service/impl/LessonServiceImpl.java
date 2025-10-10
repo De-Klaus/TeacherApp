@@ -20,6 +20,7 @@ import org.teacher.repository.TeacherRepository;
 import org.teacher.service.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,9 +92,13 @@ public class LessonServiceImpl implements LessonService {
                     .stream()
                     .map(lessonMapper::toDto)
                     .toList();
-        } else {
-            throw new AccessDeniedException("Unauthorized role");
+        } else if (currentUser.hasRole(Role.ADMIN)) {
+            return lessonRepository.findAll()
+                    .stream()
+                    .map(lessonMapper::toDto)
+                    .toList();
         }
+        return Collections.emptyList();
     }
 
     @Override
