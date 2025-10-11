@@ -2,9 +2,12 @@ package org.teacher.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.teacher.common.dto.PageResult;
 import org.teacher.dto.LessonDto;
 import org.teacher.service.LessonService;
 
@@ -37,8 +40,19 @@ public class LessonController {
 
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<LessonDto>> getAllLessons() {
-        return ResponseEntity.ok(lessonService.getAll());
+    public ResponseEntity<PageResult<LessonDto>> getAllLessons(Pageable pageable) {
+        Page<LessonDto> page = lessonService.getAll(pageable);
+
+        PageResult<LessonDto> response = new PageResult<>(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumber(),
+                page.getSize(),
+                page.isLast()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")

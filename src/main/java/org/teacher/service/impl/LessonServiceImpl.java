@@ -2,6 +2,8 @@ package org.teacher.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,25 +109,20 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<LessonDto> getAll() {
+    @Transactional(readOnly = true)
+    public Page<LessonDto> getAll(Pageable pageable) {
         UserResponseDto currentUser = authService.getCurrentUser();
         if (currentUser.hasRole(Role.TEACHER)) {
-            return lessonRepository.findAllByTeacher_User_UserId(currentUser.userId())
-                    .stream()
-                    .map(lessonMapper::toDto)
-                    .toList();
+            return lessonRepository.findAllByTeacher_User_UserId(currentUser.userId(), pageable)
+                    .map(lessonMapper::toDto);
         } else if (currentUser.hasRole(Role.STUDENT)) {
-            return lessonRepository.findAllByStudent_User_UserId(currentUser.userId())
-                    .stream()
-                    .map(lessonMapper::toDto)
-                    .toList();
+            return lessonRepository.findAllByStudent_User_UserId(currentUser.userId(), pageable)
+                    .map(lessonMapper::toDto);
         } else if (currentUser.hasRole(Role.ADMIN)) {
-            return lessonRepository.findAll()
-                    .stream()
-                    .map(lessonMapper::toDto)
-                    .toList();
+            return lessonRepository.findAll(pageable)
+                    .map(lessonMapper::toDto);
         }
-        return Collections.emptyList();
+        return Page.empty();
     }
 
     @Override
