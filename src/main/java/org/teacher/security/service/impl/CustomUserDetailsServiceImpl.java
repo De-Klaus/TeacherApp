@@ -9,11 +9,12 @@ import org.teacher.security.CustomUserDetails;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserServiceImpl implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).map(CustomUserDetails::new)
+        return userRepository.findByEmail(username)
+                .map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
