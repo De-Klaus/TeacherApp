@@ -28,7 +28,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentDto> getPaymentById(@PathVariable Long paymentId) {
+    public ResponseEntity<PaymentDto> getPaymentById(@PathVariable("id") Long paymentId) {
         return paymentService.getById(paymentId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -40,12 +40,12 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentDto> updatePayment(@PathVariable Long paymentId, @RequestBody @Valid PaymentDto dto) {
+    public ResponseEntity<PaymentDto> updatePayment(@PathVariable("id") Long paymentId, @RequestBody @Valid PaymentDto dto) {
         return ResponseEntity.ok(paymentService.update(paymentId, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long paymentId) {
+    public ResponseEntity<Void> deletePayment(@PathVariable("id") Long paymentId) {
         paymentService.delete(paymentId);
         return ResponseEntity.noContent().build();
     }

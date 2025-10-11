@@ -29,8 +29,8 @@ public class LessonController {
 
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<LessonDto> getLessonById(@PathVariable Long id) {
-        return lessonService.getById(id)
+    public ResponseEntity<LessonDto> getLessonById(@PathVariable("id") Long lessonId) {
+        return lessonService.getById(lessonId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -43,13 +43,13 @@ public class LessonController {
 
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<LessonDto> updateLesson(@PathVariable Long lessonId, @RequestBody @Valid LessonDto dto) {
+    public ResponseEntity<LessonDto> updateLesson(@PathVariable("id") Long lessonId, @RequestBody @Valid LessonDto dto) {
         return ResponseEntity.ok(lessonService.update(lessonId, dto));
     }
 
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLesson(@PathVariable Long lessonId) {
+    public ResponseEntity<Void> deleteLesson(@PathVariable("id") Long lessonId) {
         lessonService.delete(lessonId);
         return ResponseEntity.noContent().build();
     }
