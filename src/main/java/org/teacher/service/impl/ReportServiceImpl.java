@@ -1,9 +1,11 @@
 package org.teacher.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.teacher.entity.Student;
 import org.teacher.entity.StudentReport;
 import org.teacher.entity.Teacher;
@@ -12,6 +14,7 @@ import org.teacher.kafka.message.LessonCompletedEvent;
 import org.teacher.repository.StudentReportRepository;
 import org.teacher.repository.StudentRepository;
 import org.teacher.repository.TeacherReportRepository;
+import org.teacher.repository.TeacherRepository;
 import org.teacher.service.ReportService;
 
 import javax.sql.DataSource;
@@ -24,12 +27,13 @@ public class ReportServiceImpl implements ReportService {
     private final StudentReportRepository studentReportRepository;
     private final TeacherReportRepository teacherReportRepository;
     private final StudentRepository studentRepository;
-    private final TeacherReportRepository teacherRepository;
+    private final TeacherRepository teacherRepository;
     private final DataSource dataSource;
 
     private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 
     @Override
+    @Transactional
     public void updateLessonReport(LessonCompletedEvent event) {
         //TODO
         // Логика для отчета:
@@ -48,8 +52,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private void updateStudentReport(Long studentId, BigDecimal price, int minutes) {
+        Student student = this.studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found: " + studentId));
+
         StudentReport report = studentReportRepository.findByStudent_StudentId(studentId)
-                .orElseGet(() -> createNewStudentReport(studentId));
+                .orElseGet(() -> createNewStudentReport(student));
 
         report.setLessonsCount(report.getLessonsCount() + 1);
         report.setLessonsPrice(report.getLessonsPrice().add(price));
@@ -59,8 +66,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private void updateTeacherReport(Long teacherId, BigDecimal price, int minutes) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + teacherId));
+
         TeacherReport report = teacherReportRepository.findByTeacher_TeacherId(teacherId)
-                .orElseGet(() -> createNewTeacherReport(teacherId));
+                .orElseGet(() -> createNewTeacherReport(teacher));
 
         report.setLessonsCount(report.getLessonsCount() + 1);
         report.setLessonsPrice(report.getLessonsPrice().add(price));
@@ -69,25 +79,21 @@ public class ReportServiceImpl implements ReportService {
         teacherReportRepository.save(report);
     }
 
-    private StudentReport createNewStudentReport(Long studentId) {
-        StudentReport report = new StudentReport();
-        Student student = new Student();
-        student.setStudentId(studentId);
-        report.setStudent(student);
-        report.setLessonsCount(0);
-        report.setLessonsPrice(BigDecimal.ZERO);
-        report.setTotalLessonMinutes(0);
-        return report;
+    private StudentReport createNewStudentReport(Student student) {
+        return StudentReport.builder()
+                .student(student)
+                .lessonsCount(0)
+                .lessonsPrice(BigDecimal.ZERO)
+                .totalLessonMinutes(0)
+                .build();
     }
 
-    private TeacherReport createNewTeacherReport(Long teacherId) {
-        TeacherReport report = new TeacherReport();
-        Teacher teacher = new Teacher();
-        teacher.setTeacherId(teacherId);
-        report.setTeacher(teacher);
-        report.setLessonsCount(0);
-        report.setLessonsPrice(BigDecimal.ZERO);
-        report.setTotalLessonMinutes(0);
-        return report;
+    private TeacherReport createNewTeacherReport(Teacher teacher) {
+        return TeacherReport.builder()
+                .teacher(teacher)
+                .lessonsCount(0)
+                .lessonsPrice(BigDecimal.ZERO)
+                .totalLessonMinutes(0)
+                .build();
     }
 }

@@ -10,6 +10,9 @@ import java.util.Objects;
 @Table(name = "student_report")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentReport {
 
     @Id

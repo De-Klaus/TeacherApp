@@ -1,8 +1,7 @@
 package org.teacher.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -11,6 +10,9 @@ import java.util.Objects;
 @Table(name = "teacher_report")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeacherReport {
 
     @Id
