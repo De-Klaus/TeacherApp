@@ -14,10 +14,13 @@ public record PageRequestDto(
 ) {
 
     public PageRequestDto() {
-        this(0, 20, new String[]{"id,asc"});
+        this(0, 20, new String[0]);
     }
 
     public Pageable toPageable() {
+        if (sort == null || sort.length == 0) {
+            return PageRequest.of(page, size);
+        }
         List<Sort.Order> orders = Arrays.stream(sort)
                 .map(s -> {
                     String[] parts = s.split(",");
