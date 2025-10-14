@@ -3,6 +3,7 @@ package org.teacher.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.StudentTeacherDto;
 import org.teacher.mapper.StudentTeacherMapper;
@@ -27,6 +28,7 @@ public class StudentTeacherController {
                 .body(responseDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<StudentTeacherDto> getStudentTeacherById(@PathVariable("id") Long studentTeacherId) {
         return studentTeacherService.getById(studentTeacherId)
@@ -34,6 +36,7 @@ public class StudentTeacherController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<StudentTeacherDto>> getAllStudentTeachers() {
         return ResponseEntity.ok(studentTeacherService.getAll());

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.teacher.dto.StudentDto;
 import org.teacher.dto.TeacherDto;
 import org.teacher.mapper.TeacherMapper;
 import org.teacher.service.TeacherService;
@@ -32,6 +33,12 @@ public class TeacherController {
         return teacherService.getById(teacherId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<List<StudentDto>> getStudents(@PathVariable("id") Long teacherId) {
+        List<StudentDto> students = teacherService.getStudentsByTeacherId(teacherId);
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping

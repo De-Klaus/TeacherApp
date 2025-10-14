@@ -1,6 +1,7 @@
 package org.teacher.service;
 
 
+import org.teacher.dto.StudentDto;
 import org.teacher.dto.TeacherDto;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface TeacherService {
     List<TeacherDto> getAll();
     TeacherDto update(Long teacherId, TeacherDto dto);
     void delete(Long teacherId);
+    List<StudentDto> getStudentsByTeacherId(Long teacherId);
 }

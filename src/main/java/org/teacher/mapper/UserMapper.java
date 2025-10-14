@@ -7,6 +7,7 @@ import org.teacher.entity.User;
 
 public interface UserMapper {
     User toEntity(UserRequestDto userDto);
+    User toEntity(UserResponseDto userDto);
     UserRequestDto toDto(User user);
     UserResponseDto toResponseDto(User user);
     UserCredentialsDto toCredentialsDto(UserRequestDto user);

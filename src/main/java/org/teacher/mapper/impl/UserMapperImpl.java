@@ -28,6 +28,20 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
+    public User toEntity(UserResponseDto userDto) {
+        if (userDto == null) return null;
+
+        User user = new User();
+        user.setUserId(userDto.userId());
+        user.setFirstName(userDto.firstName());
+        user.setLastName(userDto.lastName());
+        user.setEmail(userDto.email());
+        user.setRoles(userDto.roles() != null ? userDto.roles() : Collections.emptySet());
+
+        return user;
+    }
+
+    @Override
     public UserRequestDto toDto(User user) {
         if (user == null) return null;
 

@@ -3,11 +3,15 @@ package org.teacher.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.teacher.dto.StudentDto;
 import org.teacher.dto.TeacherDto;
 import org.teacher.entity.Teacher;
+import org.teacher.mapper.StudentMapper;
 import org.teacher.mapper.TeacherMapper;
+import org.teacher.repository.StudentTeacherRepository;
 import org.teacher.repository.TeacherRepository;
 import org.teacher.service.TeacherService;
+import org.teacher.entity.StudentTeacher;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +21,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
 
+    private final StudentTeacherRepository studentTeacherRepository;
     private final TeacherRepository teacherRepository;
     private final TeacherMapper teacherMapper;
+    private final StudentMapper studentMapper;
 
     @Override
     public TeacherDto addTeacher(TeacherDto teacherDto) {
@@ -61,6 +67,15 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void delete(Long teacherId) {
         teacherRepository.deleteById(teacherId);
+    }
+
+    @Override
+    public List<StudentDto> getStudentsByTeacherId(Long teacherId) {
+        List<StudentTeacher> relations = studentTeacherRepository.findByTeacher_TeacherId(teacherId);
+        return relations.stream()
+                .map(StudentTeacher::getStudent)
+                .map(studentMapper::toDto)
+                .toList();
     }
 
 

@@ -6,6 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.teacher.common.dto.PageRequestDto;
 import org.teacher.dto.LessonDto;
 import org.teacher.entity.Lesson;
 import org.teacher.entity.LessonStatus;
@@ -120,7 +123,9 @@ class LessonServiceTest {
         when(lessonRepository.findAll()).thenReturn(List.of(lesson));
         when(lessonMapper.toDto(lesson)).thenReturn(lessonDto);
 
-        List<LessonDto> result = lessonService.getAll();
+        PageRequestDto pageRequest = new PageRequestDto(1,50,null);
+
+        Page<LessonDto> result = lessonService.getAll(pageRequest.toPageable());
 
         assertThat(result).hasSize(1).contains(lessonDto);
     }
