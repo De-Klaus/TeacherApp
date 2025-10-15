@@ -23,7 +23,7 @@ public class PaymentController {
     public ResponseEntity<PaymentDto> createPayment(@RequestBody @Valid PaymentDto paymentDto) {
         PaymentDto responseDto = paymentService.addPayment(paymentDto);
         return ResponseEntity
-                .created(URI.create("/payments/" + responseDto.paymentId()))
+                .created(URI.create("/payments/" + responseDto.id()))
                 .body(responseDto);
     }
 

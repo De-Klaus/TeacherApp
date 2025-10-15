@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record StudentTeacherDto(
-                 Long studentTeacherId,
+                 Long id,
                  Long studentId,
                  Long teacherId,
                  LocalDate startDate,

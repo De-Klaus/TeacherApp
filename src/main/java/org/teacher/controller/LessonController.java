@@ -26,7 +26,7 @@ public class LessonController {
     public ResponseEntity<LessonDto> createLesson(@RequestBody @Valid LessonDto lessonDto) {
         LessonDto responseDto = lessonService.addLesson(lessonDto);
         return ResponseEntity
-                .created(URI.create("/lessons/" + responseDto.lessonId()))
+                .created(URI.create("/lessons/" + responseDto.id()))
                 .body(responseDto);
     }
 

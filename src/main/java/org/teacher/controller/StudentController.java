@@ -25,7 +25,7 @@ public class StudentController {
     public ResponseEntity<StudentDto> createStudent(@RequestBody @Valid StudentDto studentDto) {
         StudentDto responseDto = studentService.addStudent(studentDto);
         return ResponseEntity
-                .created(URI.create("/students/" + responseDto.studentId()))
+                .created(URI.create("/students/" + responseDto.id()))
                 .body(responseDto);
     }
 

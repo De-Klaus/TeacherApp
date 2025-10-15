@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record LessonDto(
-                        Long lessonId,
+                        Long id,
                         Long studentId,
                         Long teacherId,
                         LocalDateTime scheduledAt,

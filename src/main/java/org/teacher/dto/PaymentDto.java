@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record PaymentDto(
-            Long paymentId,
+            Long id,
             Long studentId,
             LocalDateTime paymentDate,
             BigDecimal amount,

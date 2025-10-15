@@ -102,7 +102,7 @@ class TeacherServiceImplTest {
         assertNotNull(students);
         assertEquals(2, students.size());
 
-        List<Long> studentIds = students.stream().map(StudentDto::studentId).toList();
+        List<Long> studentIds = students.stream().map(StudentDto::id).toList();
         assertTrue(studentIds.contains(student1.getStudentId()));
         assertTrue(studentIds.contains(student2.getStudentId()));
     }

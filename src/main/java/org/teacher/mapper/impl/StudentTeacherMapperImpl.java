@@ -34,7 +34,7 @@ public class StudentTeacherMapperImpl implements StudentTeacherMapper {
         Teacher teacher = studentTeacherDto.teacherId() != null ? Teacher.builder().teacherId(studentTeacherDto.teacherId()).build() : null;
 
         StudentTeacher studentTeacher = new StudentTeacher();
-        studentTeacher.setStudentTeacherId(studentTeacherDto.studentTeacherId());
+        studentTeacher.setStudentTeacherId(studentTeacherDto.id());
         studentTeacher.setStudent(student);
         studentTeacher.setTeacher(teacher);
         studentTeacher.setStartDate(studentTeacherDto.startDate());

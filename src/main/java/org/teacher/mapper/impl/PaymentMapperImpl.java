@@ -29,7 +29,7 @@ public class PaymentMapperImpl implements PaymentMapper {
         Student student = paymentDto.studentId() != null ? Student.builder().studentId(paymentDto.studentId()).build() : null;
 
         Payment payment = new Payment();
-        payment.setPaymentId(paymentDto.paymentId());
+        payment.setPaymentId(paymentDto.id());
         payment.setStudent(student);
         payment.setPaymentDate(paymentDto.paymentDate());
         payment.setAmount(paymentDto.amount());
