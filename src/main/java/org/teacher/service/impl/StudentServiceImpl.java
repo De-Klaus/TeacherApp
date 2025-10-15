@@ -43,6 +43,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Optional<StudentDto> getStudentByUserId(UUID userId) {
+        return studentRepository.findByUser_UserId(userId)
+                .map(studentMapper::toDto);
+    }
+
+    @Override
     public Optional<StudentDto> findByUserId(UUID userId) {
         return studentRepository.findByUser_UserId(userId)
                 .map(studentMapper::toDto);

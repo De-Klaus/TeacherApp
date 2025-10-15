@@ -40,6 +40,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public Optional<TeacherDto> getTeacherByUserId(UUID userId) {
+        return teacherRepository.findByUser_UserId(userId)
+                .map(teacherMapper::toDto);
+    }
+
+    @Override
     public Optional<TeacherDto> findByUserId(UUID userId) {
         return teacherRepository.findByUser_UserId(userId)
                 .map(teacherMapper::toDto);

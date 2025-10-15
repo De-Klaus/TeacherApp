@@ -11,6 +11,7 @@ import org.teacher.service.TeacherService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/teachers")
@@ -26,6 +27,13 @@ public class TeacherController {
         return ResponseEntity
                 .created(URI.create("/teachers/" + responseDto.teacherId()))
                 .body(responseDto);
+    }
+
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<TeacherDto> getTeacherByUserId(@PathVariable("userId") UUID userId) {
+        return teacherService.getTeacherByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")

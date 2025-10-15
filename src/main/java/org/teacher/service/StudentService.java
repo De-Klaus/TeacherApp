@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface StudentService {
     StudentDto addStudent(StudentDto studentDto);
     Optional<StudentDto> getById(Long studentId);
+    Optional<StudentDto> getStudentByUserId(UUID userId);
     Optional<StudentDto> findByUserId(UUID userId);
     List<StudentDto> getAll();
     StudentDto update(Long studentId, StudentDto dto);

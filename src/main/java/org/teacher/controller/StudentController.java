@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.StudentDto;
+import org.teacher.dto.TeacherDto;
 import org.teacher.mapper.StudentMapper;
 import org.teacher.service.StudentService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/students")
@@ -30,6 +32,13 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable("id") Long studentId) {
         return studentService.getById(studentId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<StudentDto> getTeacherByUserId(@PathVariable("userId") UUID userId) {
+        return studentService.getStudentByUserId(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

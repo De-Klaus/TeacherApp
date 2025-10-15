@@ -11,9 +11,11 @@ import java.util.UUID;
 public interface TeacherService {
     TeacherDto addTeacher(TeacherDto teacherDto);
     Optional<TeacherDto> getById(Long teacherId);
+    Optional<TeacherDto> getTeacherByUserId(UUID userId);
     Optional<TeacherDto> findByUserId(UUID userId);
     List<TeacherDto> getAll();
     TeacherDto update(Long teacherId, TeacherDto dto);
     void delete(Long teacherId);
+
     List<StudentDto> getStudentsByTeacherId(Long teacherId);
 }
