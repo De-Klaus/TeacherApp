@@ -212,7 +212,11 @@ class StudentBalanceIntegrationTest {
                 LocalDateTime.now().minusDays(2),
                 60,
                 new BigDecimal("500"),
-                LessonStatus.COMPLETED,
+                new LessonStatusDto(
+                        LessonStatus.COMPLETED.name(),
+                        LessonStatus.COMPLETED.getText(),
+                        LessonStatus.COMPLETED.getColor()
+                ),
                 null,
                 null
         );
@@ -226,7 +230,11 @@ class StudentBalanceIntegrationTest {
                 LocalDateTime.now().minusDays(1),
                 60,
                 new BigDecimal("600"),
-                LessonStatus.SCHEDULED,
+                new LessonStatusDto(
+                        LessonStatus.SCHEDULED.name(),
+                        LessonStatus.SCHEDULED.getText(),
+                        LessonStatus.SCHEDULED.getColor()
+                ),
                 null,
                 null
         );
@@ -239,7 +247,11 @@ class StudentBalanceIntegrationTest {
                 LocalDateTime.now(),
                 60,
                 new BigDecimal("400"),
-                LessonStatus.CANCELED,
+                new LessonStatusDto(
+                        LessonStatus.CANCELED.name(),
+                        LessonStatus.CANCELED.getText(),
+                        LessonStatus.CANCELED.getColor()
+                ),
                 null,
                 null
         );
