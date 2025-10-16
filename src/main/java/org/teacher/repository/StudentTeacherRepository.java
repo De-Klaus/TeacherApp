@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.teacher.entity.StudentTeacher;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface StudentTeacherRepository extends JpaRepository<StudentTeacher, Long> {
@@ -23,4 +24,9 @@ public interface StudentTeacherRepository extends JpaRepository<StudentTeacher, 
     List<StudentTeacher> findByStudent_StudentId(@Param("studentId") Long studentId);
 
     List<StudentTeacher> findByTeacher_TeacherId(Long teacherId);
+
+    @Query("SELECT COUNT(st) FROM StudentTeacher st " +
+            "WHERE st.teacher.user.userId = :teacherUserId " +
+            "AND st.status = org.teacher.entity.StudentTeacherStatus.ACTIVE")
+    long countActiveStudentsByTeacherUserId(@Param("teacherUserId") UUID teacherUserId);
 }

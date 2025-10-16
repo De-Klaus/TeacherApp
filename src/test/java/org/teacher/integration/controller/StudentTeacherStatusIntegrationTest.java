@@ -11,10 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.teacher.dto.LessonDto;
-import org.teacher.dto.StudentDto;
-import org.teacher.dto.StudentTeacherDto;
-import org.teacher.dto.TeacherDto;
+import org.teacher.dto.*;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.LessonStatus;
@@ -171,7 +168,11 @@ class StudentTeacherStatusIntegrationTest {
                 LocalDateTime.now().minusDays(1),
                 60,
                 null,
-                LessonStatus.COMPLETED,
+                new LessonStatusDto(
+                        LessonStatus.SCHEDULED.name(),
+                        LessonStatus.SCHEDULED.getText(),
+                        LessonStatus.SCHEDULED.getColor()
+                ),
                 "Homework 1",
                 null
         );
@@ -212,7 +213,11 @@ class StudentTeacherStatusIntegrationTest {
                 LocalDateTime.now().plusDays(1),
                 60,
                 null,
-                LessonStatus.SCHEDULED,
+                new LessonStatusDto(
+                        LessonStatus.SCHEDULED.name(),
+                        LessonStatus.SCHEDULED.getText(),
+                        LessonStatus.SCHEDULED.getColor()
+                ),
                 "Homework 2",
                 null
         );

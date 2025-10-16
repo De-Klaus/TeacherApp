@@ -202,7 +202,11 @@ public class LessonCompletedIntegrationTest extends AbstractKafkaIntegrationTest
                 LocalDateTime.now(),
                 60,
                 new BigDecimal("5000.00"),
-                LessonStatus.COMPLETED,
+                new LessonStatusDto(
+                        LessonStatus.COMPLETED.name(),
+                        LessonStatus.COMPLETED.getText(),
+                        LessonStatus.COMPLETED.getColor()
+                ),
                 "homework",
                 "feedback"
         );

@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.teacher.common.dto.PageRequestDto;
 import org.teacher.dto.LessonDto;
+import org.teacher.dto.LessonStatusDto;
 import org.teacher.entity.Lesson;
 import org.teacher.entity.LessonStatus;
 import org.teacher.entity.Student;
@@ -79,7 +80,11 @@ class LessonServiceTest {
                 null,
                 null,
                 null,
-                LessonStatus.COMPLETED,
+                new LessonStatusDto(
+                        LessonStatus.COMPLETED.name(),
+                        LessonStatus.COMPLETED.getText(),
+                        LessonStatus.COMPLETED.getColor()
+                ),
                 null,
                 null
         );

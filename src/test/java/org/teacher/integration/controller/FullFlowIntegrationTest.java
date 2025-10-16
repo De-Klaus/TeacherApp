@@ -205,7 +205,11 @@ public class FullFlowIntegrationTest {
                 LocalDateTime.now().plusDays(1),
                 60,
                 new BigDecimal("500"),
-                LessonStatus.SCHEDULED,
+                new LessonStatusDto(
+                        LessonStatus.SCHEDULED.name(),
+                        LessonStatus.SCHEDULED.getText(),
+                        LessonStatus.SCHEDULED.getColor()
+                ),
                 "Solve exercises 1-10",
                 null
         );

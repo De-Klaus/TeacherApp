@@ -267,7 +267,11 @@ public class StudentTeacherHistoryIntegrationTest {
                 LocalDateTime.now().plusDays(1),
                 60,
                 null,
-                LessonStatus.SCHEDULED,
+                new LessonStatusDto(
+                        LessonStatus.SCHEDULED.name(),
+                        LessonStatus.SCHEDULED.getText(),
+                        LessonStatus.SCHEDULED.getColor()
+                ),
                 "Read Chapter 1",
                 null
         );

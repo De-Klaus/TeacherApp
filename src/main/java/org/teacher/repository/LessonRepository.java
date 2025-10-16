@@ -20,4 +20,5 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> findAllByStudent_User_UserId(UUID userId);
     Page<Lesson> findAllByStudent_User_UserId(UUID userId, Pageable pageable);
     Page<Lesson> findAllByTeacher_User_UserId(UUID userId, Pageable pageable);
+    long count_UserId(UUID userId);
 }
