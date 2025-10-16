@@ -133,13 +133,14 @@ class StudentBalanceIntegrationTest {
         StudentDto student = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
 
         String studentJson = objectMapper.writeValueAsString(student);
@@ -158,9 +159,10 @@ class StudentBalanceIntegrationTest {
         TeacherDto teacher = new TeacherDto(
                 null,
                 savedTeacherUser.userId(),
+                savedTeacherUser.firstName(),
+                savedTeacherUser.lastName(),
                 "Math",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson = objectMapper.writeValueAsString(teacher);
@@ -178,8 +180,8 @@ class StudentBalanceIntegrationTest {
         // --- 3. Создаём StudentTeacher с agreedRate ---
         StudentTeacherDto studentTeacher = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("500"),
@@ -204,8 +206,8 @@ class StudentBalanceIntegrationTest {
         // --- 4. Создаём уроки с разными статусами ---
         LessonDto lesson1 = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDateTime.now().minusDays(2),
                 60,
                 new BigDecimal("500"),
@@ -218,8 +220,8 @@ class StudentBalanceIntegrationTest {
 
         LessonDto lesson2 = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDateTime.now().minusDays(1),
                 60,
                 new BigDecimal("600"),
@@ -231,8 +233,8 @@ class StudentBalanceIntegrationTest {
 
         LessonDto lesson3 = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDateTime.now(),
                 60,
                 new BigDecimal("400"),
@@ -245,7 +247,7 @@ class StudentBalanceIntegrationTest {
         // --- 5. Создаём платежи ---
         PaymentDto paymentDto1 = new PaymentDto(
                 null,
-                savedStudent.studentId(),
+                savedStudent.id(),
                 LocalDateTime.now().minusDays(3),
                 new BigDecimal("700"),
                 PaymentMethod.TRANSFER,
@@ -255,7 +257,7 @@ class StudentBalanceIntegrationTest {
 
         PaymentDto paymentDto2 = new PaymentDto(
                 null,
-                savedStudent.studentId(),
+                savedStudent.id(),
                 LocalDateTime.now().minusDays(2),
                 new BigDecimal("300"),
                 PaymentMethod.TRANSFER,
@@ -264,7 +266,7 @@ class StudentBalanceIntegrationTest {
         String savedPaymentJson2 = savePaymentFromApi(paymentDto2);
 
         // --- 6. Расчёт баланса через сервис ---
-        BigDecimal balance = studentService.calculateBalance(savedStudent.studentId());
+        BigDecimal balance = studentService.calculateBalance(savedStudent.id());
 
         // --- Проверка ---
         // COMPLETED уроки: lesson1 = 500

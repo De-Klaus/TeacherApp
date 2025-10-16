@@ -146,13 +146,14 @@ public class StudentTeacherHistoryIntegrationTest {
         StudentDto student = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
 
         String studentJson = objectMapper.writeValueAsString(student);
@@ -171,9 +172,10 @@ public class StudentTeacherHistoryIntegrationTest {
         TeacherDto teacher1 = new TeacherDto(
                 null,
                 savedTeacherUser1.userId(),
+                savedTeacherUser1.firstName(),
+                savedTeacherUser1.lastName(),
                 "Math",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson1 = objectMapper.writeValueAsString(teacher1);
@@ -192,9 +194,10 @@ public class StudentTeacherHistoryIntegrationTest {
         TeacherDto teacher2 = new TeacherDto(
                 null,
                 savedTeacherUser2.userId(),
+                savedTeacherUser2.firstName(),
+                savedTeacherUser2.lastName(),
                 "Physics",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson2 = objectMapper.writeValueAsString(teacher2);
@@ -213,8 +216,8 @@ public class StudentTeacherHistoryIntegrationTest {
         // --- 3.1 Create StudentTeacher associations ---
         StudentTeacherDto studentTeacher1 = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher1.teacherId(),
+                savedStudent.id(),
+                savedTeacher1.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("400"),
@@ -236,8 +239,8 @@ public class StudentTeacherHistoryIntegrationTest {
         // --- 3.2
         StudentTeacherDto studentTeacher2 = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher2.teacherId(),
+                savedStudent.id(),
+                savedTeacher2.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("600"),
@@ -259,8 +262,8 @@ public class StudentTeacherHistoryIntegrationTest {
         // --- 4. Create Lesson without price (should use active StudentTeacher rate) ---
         LessonDto lessonDto = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher2.teacherId(),
+                savedStudent.id(),
+                savedTeacher2.id(),
                 LocalDateTime.now().plusDays(1),
                 60,
                 null,
@@ -282,9 +285,9 @@ public class StudentTeacherHistoryIntegrationTest {
         LessonDto savedLesson = objectMapper.readValue(savedLessonJson, LessonDto.class);
 
         // --- 5. Assertions ---
-        Lesson fetchedLesson = lessonRepository.findById(savedLesson.lessonId()).orElseThrow();
+        Lesson fetchedLesson = lessonRepository.findById(savedLesson.id()).orElseThrow();
 
-        assertThat(fetchedLesson.getTeacher().getTeacherId()).isEqualTo(savedTeacher2.teacherId()); // active teacher
+        assertThat(fetchedLesson.getTeacher().getTeacherId()).isEqualTo(savedTeacher2.id()); // active teacher
         assertThat(fetchedLesson.getPrice()).isEqualByComparingTo("600"); // rate from active StudentTeacher
     }
 

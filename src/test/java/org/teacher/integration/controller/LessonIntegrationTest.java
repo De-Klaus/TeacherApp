@@ -126,13 +126,14 @@ class LessonIntegrationTest {
         StudentDto student = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
 
         String studentJson = objectMapper.writeValueAsString(student);
@@ -151,9 +152,10 @@ class LessonIntegrationTest {
         TeacherDto teacher = new TeacherDto(
                 null,
                 savedTeacherUser.userId(),
+                savedTeacherUser.firstName(),
+                savedTeacherUser.lastName(),
                 "Math",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson = objectMapper.writeValueAsString(teacher);
@@ -171,8 +173,8 @@ class LessonIntegrationTest {
         // --- 3. Создаём StudentTeacher с agreedRate ---
         StudentTeacherDto studentTeacher = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("500"),
@@ -197,8 +199,8 @@ class LessonIntegrationTest {
         // --- 4. Создаём Lesson без price ---
         LessonDto lessonDto = new LessonDto(
                                     null,
-                                    savedStudent.studentId(),
-                                    savedTeacher.teacherId(),
+                                    savedStudent.id(),
+                                    savedTeacher.id(),
                                     LocalDateTime.now().plusDays(1),
                                     60,
                                     null,
@@ -228,8 +230,8 @@ class LessonIntegrationTest {
         // --- Создаём Lesson с индивидуальной ценой ---
         LessonDto lessonDto = new LessonDto(
                                     null,
-                                    savedStudent.studentId(),
-                                    savedTeacher.teacherId(),
+                                    savedStudent.id(),
+                                    savedTeacher.id(),
                                     LocalDateTime.now().plusDays(1),
                                     60,
                                     new BigDecimal("750"),

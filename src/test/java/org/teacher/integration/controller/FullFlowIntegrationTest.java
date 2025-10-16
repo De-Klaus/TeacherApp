@@ -134,13 +134,14 @@ public class FullFlowIntegrationTest {
         StudentDto student = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
 
         String studentJson = objectMapper.writeValueAsString(student);
@@ -158,9 +159,10 @@ public class FullFlowIntegrationTest {
         TeacherDto teacher = new TeacherDto(
                 null,
                 savedTeacherUser.userId(),
+                savedTeacherUser.firstName(),
+                savedTeacherUser.lastName(),
                 "Math",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson = objectMapper.writeValueAsString(teacher);
@@ -177,8 +179,8 @@ public class FullFlowIntegrationTest {
         // ---------- 5. StudentTeacher ----------
         StudentTeacherDto studentTeacher = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("500"),
@@ -199,8 +201,8 @@ public class FullFlowIntegrationTest {
         // ---------- 6. Lesson ----------
         LessonDto lesson = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDateTime.now().plusDays(1),
                 60,
                 new BigDecimal("500"),
@@ -221,9 +223,9 @@ public class FullFlowIntegrationTest {
         LessonDto savedLesson = objectMapper.readValue(savedLessonJson, LessonDto.class);
 
         // ---------- 7. Проверки ----------
-        assertThat(studentRepository.findById(savedStudent.studentId())).isPresent();
-        assertThat(teacherRepository.findById(savedTeacher.teacherId())).isPresent();
-        assertThat(studentTeacherRepository.findById(savedSt.studentTeacherId())).isPresent();
-        assertThat(lessonRepository.findById(savedLesson.lessonId())).isPresent();
+        assertThat(studentRepository.findById(savedStudent.id())).isPresent();
+        assertThat(teacherRepository.findById(savedTeacher.id())).isPresent();
+        assertThat(studentTeacherRepository.findById(savedSt.id())).isPresent();
+        assertThat(lessonRepository.findById(savedLesson.id())).isPresent();
     }
 }

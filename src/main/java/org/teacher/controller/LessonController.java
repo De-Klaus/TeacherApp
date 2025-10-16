@@ -14,6 +14,7 @@ import org.teacher.service.LessonService;
 
 import java.net.URI;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/lessons")
 @RequiredArgsConstructor

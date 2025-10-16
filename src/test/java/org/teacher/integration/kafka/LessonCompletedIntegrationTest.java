@@ -123,13 +123,14 @@ public class LessonCompletedIntegrationTest extends AbstractKafkaIntegrationTest
         StudentDto student = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
 
         String studentJson = objectMapper.writeValueAsString(student);
@@ -148,9 +149,10 @@ public class LessonCompletedIntegrationTest extends AbstractKafkaIntegrationTest
         TeacherDto teacher = new TeacherDto(
                 null,
                 savedTeacherUser.userId(),
+                savedTeacherUser.firstName(),
+                savedTeacherUser.lastName(),
                 "Math",
-                "Europe/Moscow",
-                null
+                "Europe/Moscow"
         );
 
         String teacherJson = objectMapper.writeValueAsString(teacher);
@@ -168,8 +170,8 @@ public class LessonCompletedIntegrationTest extends AbstractKafkaIntegrationTest
         // --- 3. Создаём StudentTeacher с agreedRate ---
         StudentTeacherDto studentTeacher = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher.teacherId(),
+                savedStudent.id(),
+                savedTeacher.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("500"),
@@ -191,8 +193,8 @@ public class LessonCompletedIntegrationTest extends AbstractKafkaIntegrationTest
 
     @Test
     void addLesson_shouldPublishAndConsumeLessonCompletedEvent() throws InterruptedException {
-        var studentId = savedStudent.studentId();
-        var teacherId = savedTeacher.teacherId();
+        var studentId = savedStudent.id();
+        var teacherId = savedTeacher.id();
         // 1. Создаем DTO урока
         LessonDto lessonDto = new LessonDto(
                 null,

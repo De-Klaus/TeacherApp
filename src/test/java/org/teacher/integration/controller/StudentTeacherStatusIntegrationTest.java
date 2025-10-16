@@ -101,13 +101,14 @@ class StudentTeacherStatusIntegrationTest {
         var studentDto = new StudentDto(
                 null,
                 savedStudentUser.userId(),
+                savedStudentUser.firstName(),
+                savedStudentUser.lastName(),
                 LocalDate.of(2010, 5, 10),
                 "+79888888888",
                 "Moscow",
                 "Europe/Moscow",
                 5,
-                "Education",
-                null
+                "Education"
         );
         String studentJson = objectMapper.writeValueAsString(studentDto);
         String tokenStudent = obtainAccessToken(mockMvc, objectMapper, studentUser.email(), studentUser.password());
@@ -120,7 +121,7 @@ class StudentTeacherStatusIntegrationTest {
         StudentDto savedStudent = objectMapper.readValue(savedStudentJson, StudentDto.class);
 
         // --- 4. Create TEACHERS ---
-        var teacherDto1 = new TeacherDto(null, savedTeacherUser1.userId(), "Math", "Europe/Moscow", null);
+        var teacherDto1 = new TeacherDto(null, savedTeacherUser1.userId(), savedTeacherUser1.firstName(),savedTeacherUser1.lastName(), "Math", "Europe/Moscow");
         String teacherJson1 = objectMapper.writeValueAsString(teacherDto1);
         String tokenTeacher1 = obtainAccessToken(mockMvc, objectMapper, teacherUser1.email(), teacherUser1.password());
         String savedTeacherJson1 = mockMvc.perform(post("/teachers")
@@ -131,7 +132,7 @@ class StudentTeacherStatusIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
         TeacherDto savedTeacher1 = objectMapper.readValue(savedTeacherJson1, TeacherDto.class);
 
-        var teacherDto2 = new TeacherDto(null, savedTeacherUser2.userId(), "Physics", "Europe/Moscow", null);
+        var teacherDto2 = new TeacherDto(null, savedTeacherUser2.userId(), savedTeacherUser2.firstName(),savedTeacherUser2.lastName(), "Physics", "Europe/Moscow");
         String teacherJson2 = objectMapper.writeValueAsString(teacherDto2);
         String tokenTeacher2 = obtainAccessToken(mockMvc, objectMapper, teacherUser2.email(), teacherUser2.password());
         String savedTeacherJson2 = mockMvc.perform(post("/teachers")
@@ -145,8 +146,8 @@ class StudentTeacherStatusIntegrationTest {
         // --- 5. Assign ACTIVE StudentTeacher to first teacher ---
         var stDto1 = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher1.teacherId(),
+                savedStudent.id(),
+                savedTeacher1.id(),
                 LocalDate.now().minusMonths(2),
                 null,
                 new BigDecimal("500"),
@@ -165,8 +166,8 @@ class StudentTeacherStatusIntegrationTest {
         // --- 6. Create lesson for old teacher ---
         var lessonDto1 = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher1.teacherId(),
+                savedStudent.id(),
+                savedTeacher1.id(),
                 LocalDateTime.now().minusDays(1),
                 60,
                 null,
@@ -182,15 +183,15 @@ class StudentTeacherStatusIntegrationTest {
                 .andExpect(status().isCreated());
 
         // --- 7. End old StudentTeacher and assign new ACTIVE teacher ---
-        mockMvc.perform(patch("/student-teachers/{id}/end", savedStudentTeacher.studentTeacherId()) // assume first StudentTeacher ID = 1
+        mockMvc.perform(patch("/student-teachers/{id}/end", savedStudentTeacher.id()) // assume first StudentTeacher ID = 1
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenTeacher1))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         var stDto2 = new StudentTeacherDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher2.teacherId(),
+                savedStudent.id(),
+                savedTeacher2.id(),
                 LocalDate.now(),
                 null,
                 new BigDecimal("700"),
@@ -206,8 +207,8 @@ class StudentTeacherStatusIntegrationTest {
         // --- 8. Create new lesson (should use new active teacher and rate) ---
         var lessonDto2 = new LessonDto(
                 null,
-                savedStudent.studentId(),
-                savedTeacher2.teacherId(),
+                savedStudent.id(),
+                savedTeacher2.id(),
                 LocalDateTime.now().plusDays(1),
                 60,
                 null,
@@ -225,7 +226,7 @@ class StudentTeacherStatusIntegrationTest {
         LessonDto savedLesson2 = objectMapper.readValue(responseLesson2, LessonDto.class);
 
         // --- 9. Assertions ---
-        assertThat(savedLesson2.teacherId()).isEqualTo(savedTeacher2.teacherId());
+        assertThat(savedLesson2.teacherId()).isEqualTo(savedTeacher2.id());
         assertThat(savedLesson2.price()).isEqualByComparingTo(new BigDecimal("700"));
     }
 }
