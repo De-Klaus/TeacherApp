@@ -3,18 +3,17 @@ package org.teacher.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.common.dto.PageRequestDto;
 import org.teacher.common.dto.PageResponseDto;
 import org.teacher.dto.LessonDto;
+import org.teacher.entity.LessonStatus;
 import org.teacher.service.LessonService;
 
 import java.net.URI;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/lessons")
 @RequiredArgsConstructor
@@ -57,5 +56,28 @@ public class LessonController {
     public ResponseEntity<Void> deleteLesson(@PathVariable("id") Long lessonId) {
         lessonService.delete(lessonId);
         return ResponseEntity.noContent().build();
+    }
+
+    // ===== Методы для изменения статуса =====
+
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @PatchMapping("/{id}/start")
+    public ResponseEntity<LessonDto> startLesson(@PathVariable Long id) {
+        LessonDto lesson = lessonService.updateLessonStatus(id, LessonStatus.IN_PROGRESS);
+        return ResponseEntity.ok(lesson);
+    }
+
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<LessonDto> completeLesson(@PathVariable Long id) {
+        LessonDto lesson = lessonService.updateLessonStatus(id, LessonStatus.COMPLETED);
+        return ResponseEntity.ok(lesson);
+    }
+
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<LessonDto> cancelLesson(@PathVariable Long id) {
+        LessonDto lesson = lessonService.updateLessonStatus(id, LessonStatus.CANCELED);
+        return ResponseEntity.ok(lesson);
     }
 }

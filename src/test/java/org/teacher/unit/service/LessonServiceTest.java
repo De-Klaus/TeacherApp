@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.teacher.common.dto.PageRequestDto;
 import org.teacher.dto.LessonDto;
 import org.teacher.entity.Lesson;

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +16,11 @@ import org.teacher.entity.*;
 import org.teacher.kafka.message.LessonCompletedEvent;
 import org.teacher.kafka.producer.LessonCompletedEventProducer;
 import org.teacher.mapper.LessonMapper;
+import org.teacher.mapper.LessonStatusMapper;
 import org.teacher.repository.LessonRepository;
 import org.teacher.repository.TeacherRepository;
 import org.teacher.service.*;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +31,7 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
     private final StudentTeacherService studentTeacherService;
     private final LessonMapper lessonMapper;
+    private final LessonStatusMapper lessonStatusMapper;
     private final LessonCompletedEventProducer lessonEventProducer;
     private final AuthService authService;
 
@@ -134,7 +135,7 @@ public class LessonServiceImpl implements LessonService {
         lesson.setScheduledAt(dto.scheduledAt());
         lesson.setDurationMinutes(dto.durationMinutes());
         lesson.setPrice(dto.price());
-        lesson.setStatus(dto.status());
+        lesson.setStatus(lessonStatusMapper.toEntity(dto.status()));
         lesson.setHomework(dto.homework());
         lesson.setFeedback(dto.feedback());
 
@@ -147,6 +148,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @Transactional
     public void delete(Long lessonId) {
         UserResponseDto currentUser = authService.getCurrentUser();
         Lesson lesson = lessonRepository.findById(lessonId)
@@ -164,5 +166,30 @@ public class LessonServiceImpl implements LessonService {
                 && lesson.getTeacher().getUser().getUserId().equals(user.userId()))
                 || (user.hasRole(Role.STUDENT)
                 && lesson.getStudent().getUser().getUserId().equals(user.userId()));
+    }
+
+    @Override
+    @Transactional
+    public LessonDto updateLessonStatus(Long lessonId, LessonStatus status) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id " + lessonId));
+
+        // Можно добавить проверку перехода статусов (best practice)
+        if (!isValidStatusTransition(lesson.getStatus(), status)) {
+            throw new IllegalStateException("Invalid status transition from " + lesson.getStatus() + " to " + status);
+        }
+
+        lesson.setStatus(status);
+
+        Lesson saved = lessonRepository.save(lesson);
+        return lessonMapper.toDto(saved);
+    }
+
+    private boolean isValidStatusTransition(LessonStatus current, LessonStatus next) {
+        return switch (current) {
+            case SCHEDULED -> next == LessonStatus.IN_PROGRESS || next == LessonStatus.CANCELED;
+            case IN_PROGRESS -> next == LessonStatus.COMPLETED || next == LessonStatus.CANCELED;
+            case COMPLETED, CANCELED -> false;
+        };
     }
 }

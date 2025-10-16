@@ -17,7 +17,6 @@ import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.LessonStatus;
 import org.teacher.entity.Role;
 import org.teacher.entity.StudentTeacherStatus;
-import org.teacher.kafka.producer.LessonCompletedEventProducer;
 import org.teacher.mapper.UserMapper;
 import org.teacher.repository.*;
 import org.teacher.service.LessonService;

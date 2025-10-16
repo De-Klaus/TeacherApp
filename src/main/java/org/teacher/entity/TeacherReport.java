@@ -24,12 +24,15 @@ public class TeacherReport {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
+    @Builder.Default
     @Column(name = "lessons_count", nullable = false)
     private Integer lessonsCount = 0;
 
+    @Builder.Default
     @Column(name = "lessons_price", nullable = false)
     private BigDecimal lessonsPrice  = new BigDecimal(0);
 
+    @Builder.Default
     @Column(name = "total_lesson_minutes", nullable = false)
     private Integer totalLessonMinutes = 0;
 

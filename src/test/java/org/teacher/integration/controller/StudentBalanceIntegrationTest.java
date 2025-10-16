@@ -16,6 +16,7 @@ import org.teacher.dto.*;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.*;
+import org.teacher.entity.LessonStatus;
 import org.teacher.mapper.UserMapper;
 import org.teacher.repository.*;
 import org.teacher.service.StudentService;

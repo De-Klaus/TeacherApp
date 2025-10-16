@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.assertj.core.api.Assertions.assertThat;

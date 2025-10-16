@@ -1,7 +1,7 @@
 package org.teacher.dto;
 
 import jakarta.validation.constraints.NotNull;
-import org.teacher.entity.LessonStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ public record LessonDto(
                         LocalDateTime scheduledAt,
                         Integer durationMinutes,
                         BigDecimal price,
-                        LessonStatus status,
+                        LessonStatusDto status,
                         String homework,
                         String feedback
 ) {

@@ -1,14 +1,20 @@
 package org.teacher.mapper.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.teacher.dto.LessonDto;
 import org.teacher.entity.Lesson;
 import org.teacher.entity.Student;
 import org.teacher.entity.Teacher;
 import org.teacher.mapper.LessonMapper;
+import org.teacher.mapper.LessonStatusMapper;
 
 @Component
+@RequiredArgsConstructor
 public class LessonMapperImpl implements LessonMapper {
+
+    private final LessonStatusMapper lessonStatusMapper;
+
     @Override
     public LessonDto toDto(Lesson lesson) {
         if (lesson == null) return null;
@@ -20,7 +26,7 @@ public class LessonMapperImpl implements LessonMapper {
                 lesson.getScheduledAt(),
                 lesson.getDurationMinutes(),
                 lesson.getPrice(),
-                lesson.getStatus(),
+                lessonStatusMapper.toDto(lesson.getStatus()),
                 lesson.getHomework(),
                 lesson.getFeedback()
                 );
@@ -39,7 +45,7 @@ public class LessonMapperImpl implements LessonMapper {
         lesson.setScheduledAt(lessonDto.scheduledAt());
         lesson.setDurationMinutes(lessonDto.durationMinutes());
         lesson.setPrice(lessonDto.price());
-        lesson.setStatus(lessonDto.status());
+        lesson.setStatus(lessonStatusMapper.toEntity(lessonDto.status()));
         lesson.setHomework(lessonDto.homework());
         lesson.setFeedback(lessonDto.feedback());
         return lesson;
