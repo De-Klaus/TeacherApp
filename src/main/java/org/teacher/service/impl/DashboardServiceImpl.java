@@ -1,12 +1,10 @@
 package org.teacher.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.teacher.dto.DashboardStatsDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.Role;
-import org.teacher.entity.Teacher;
 import org.teacher.repository.LessonRepository;
 import org.teacher.repository.StudentRepository;
 import org.teacher.repository.StudentTeacherRepository;
@@ -30,7 +28,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         if (currentUser.hasRole(Role.TEACHER)) {
             long totalStudents = studentTeacherRepository.countActiveStudentsByTeacherUserId(currentUser.userId());
-            long totalLessons = lessonRepository.count_UserId(currentUser.userId());
+            long totalLessons = lessonRepository.countByTeacher_User_UserId(currentUser.userId());
             return new DashboardStatsDto(
                     totalStudents,
                     1L,
