@@ -1,4 +1,4 @@
-package org.teacher.config;
+package org.teacher.config.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

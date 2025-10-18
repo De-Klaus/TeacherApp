@@ -1,4 +1,4 @@
-package org.teacher.config;
+package org.teacher.config.kafka;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

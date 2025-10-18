@@ -1,4 +1,4 @@
-package org.teacher.config;
+package org.teacher.config.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

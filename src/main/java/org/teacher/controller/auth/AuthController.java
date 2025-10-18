@@ -19,8 +19,6 @@ import javax.naming.AuthenticationException;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-
     private final UserService userService;
 
     @PostMapping("/sign-in")
