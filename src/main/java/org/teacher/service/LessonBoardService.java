@@ -4,7 +4,9 @@ import org.teacher.dto.LessonBoardDto;
 
 public interface LessonBoardService {
 
-    public LessonBoardDto saveBoard(Long lessonId, String sceneJson);
+    LessonBoardDto saveBoard(Long lessonId, String sceneJson);
 
-    public String loadBoard(Long lessonId);
+    String loadBoard(Long lessonId);
+
+    boolean boardExists(Long lessonId);
 }

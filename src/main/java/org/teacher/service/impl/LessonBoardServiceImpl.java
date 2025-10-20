@@ -37,4 +37,11 @@ public class LessonBoardServiceImpl implements LessonBoardService {
                 .map(LessonBoard::getSceneJson)
                 .orElse("[]");
     }
+
+    @Override
+    public boolean boardExists(Long lessonId) {
+        return lessonBoardRepository
+                .findByLesson_LessonId(lessonId)
+                .isPresent();
+    }
 }

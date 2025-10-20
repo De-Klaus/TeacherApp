@@ -23,6 +23,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     //real-time доска
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+
     //WhatsAppClient
     /**/
     // Шифрование паролей

@@ -13,11 +13,11 @@ public class LessonBoardWebSocketController {
 
     private final LessonBoardService lessonBoardService;
 
-    @MessageMapping("/lesson/{lessonId}/update")  // сообщения приходят сюда
-    @SendTo("/topic/lesson/{lessonId}")          // все подписчики получат данные
-    public String updateBoard(@DestinationVariable Long lessonId, String sceneJson) {
-        // Можно одновременно сохранять состояние на сервер
-        lessonBoardService.saveBoard(lessonId, sceneJson);
-        return sceneJson;
+    @MessageMapping("/lessons/{lessonId}/board")
+    @SendTo("/topic/lessons/{lessonId}/board")
+    public String handleBoardUpdate(@DestinationVariable Long lessonId, String sceneJson) {
+        // Сохранение и рассылка обновлений
+        var saveResult = lessonBoardService.saveBoard(lessonId, sceneJson);
+        return saveResult.sceneJson();
     }
 }

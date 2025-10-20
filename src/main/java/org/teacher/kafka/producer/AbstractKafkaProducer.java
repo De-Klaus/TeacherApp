@@ -1,16 +1,15 @@
 package org.teacher.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract  class AbstractKafkaProducer<T> implements EventProducer<T> {
 
     protected final KafkaTemplate<String, T> kafkaTemplate;
     protected final String topic;
-    protected static final Logger log = LoggerFactory.getLogger(AbstractKafkaProducer.class);
 
     @Override
     public void send(T event) {

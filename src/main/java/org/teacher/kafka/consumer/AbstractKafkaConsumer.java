@@ -1,15 +1,13 @@
 package org.teacher.kafka.consumer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.support.Acknowledgment;
 
+@Slf4j
 public abstract class AbstractKafkaConsumer<T> {
 
     private final EventConsumer<T> eventConsumer;
-
-    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     protected AbstractKafkaConsumer(EventConsumer<T> eventConsumer) {
         this.eventConsumer = eventConsumer;

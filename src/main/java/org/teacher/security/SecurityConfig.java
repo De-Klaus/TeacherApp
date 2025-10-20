@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,13 +34,21 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+                /*.csrf(csrf -> csrf
+                        //.disable()
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/ws-board/**")) // or use ignoringRequestMatchers only, then remove disable()
+                )*/
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        // 1) Permit SockJS/STOMP handshake + transports (GET /info, OPTIONS, POST xhr_streaming, etc.)
+                        .requestMatchers("/ws-board/**").permitAll()
+
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/**").authenticated()
-                        .anyRequest().denyAll())
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .anyRequest().denyAll()
+                )
+                .sessionManagement(s-> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -59,6 +68,8 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+        // optionally be explicit:
+        // source.registerCorsConfiguration("/ws-board/**", configuration);
         return source;
     }
 
