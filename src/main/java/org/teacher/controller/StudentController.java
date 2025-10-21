@@ -25,7 +25,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final StudentMapper studentMapper;
-    private final AuthService authService;
+
 
     @PostMapping
     public ResponseEntity<StudentDto> createStudent(@RequestBody @Valid StudentDto studentDto) {
@@ -68,14 +68,7 @@ public class StudentController {
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     @PostMapping("/{id}/claim-token")
     public ResponseEntity<StudentClaimTokenDto> generateClaimToken(@PathVariable("id") Long studentId) {
-
-        // Проверяем роль текущего пользователя
-        UserResponseDto currentUser = authService.getCurrentUser();
-        if (!currentUser.roles().contains(Role.TEACHER)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        StudentClaimTokenDto claimTokenDto = studentService.generateClaimToken(studentId, currentUser.email());
+        StudentClaimTokenDto claimTokenDto = studentService.generateClaimToken(studentId);
         return ResponseEntity.ok(claimTokenDto);
     }
 }

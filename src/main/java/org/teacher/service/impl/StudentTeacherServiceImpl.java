@@ -70,6 +70,7 @@ public class StudentTeacherServiceImpl implements StudentTeacherService {
                 .token(UUID.randomUUID())
                 .user(saveUser)
                 .student(savedStudent)
+                .teacher(teacher)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMonths(6))
                 .used(false)

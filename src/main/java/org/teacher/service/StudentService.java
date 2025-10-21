@@ -17,5 +17,5 @@ public interface StudentService {
     StudentDto update(Long studentId, StudentDto dto);
     void delete(Long studentId);
     BigDecimal calculateBalance(Long studentId);
-    StudentClaimTokenDto generateClaimToken(Long studentId, String createdBy);
+    StudentClaimTokenDto generateClaimToken(Long studentId);
 }

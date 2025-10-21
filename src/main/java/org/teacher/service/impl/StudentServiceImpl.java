@@ -6,12 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teacher.dto.StudentDto;
 import org.teacher.dto.request.StudentClaimTokenDto;
+import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.*;
 import org.teacher.mapper.StudentMapper;
-import org.teacher.repository.LessonRepository;
-import org.teacher.repository.PaymentRepository;
-import org.teacher.repository.StudentClaimTokenRepository;
-import org.teacher.repository.StudentRepository;
+import org.teacher.repository.*;
+import org.teacher.service.AuthService;
 import org.teacher.service.StudentService;
 
 import java.math.BigDecimal;
@@ -24,9 +23,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    private final AuthService authService;
     private final StudentRepository studentRepository;
     private final PaymentRepository paymentRepository;
     private final LessonRepository lessonRepository;
+    private final TeacherRepository teacherRepository;
     private final StudentMapper studentMapper;
     private final StudentClaimTokenRepository tokenRepository;
 
@@ -112,7 +113,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public StudentClaimTokenDto generateClaimToken(Long studentId, String createdBy) {
+    public StudentClaimTokenDto generateClaimToken(Long studentId) {
+        UserResponseDto currentUser = authService.getCurrentUser();
+
+        Teacher teacher = teacherRepository.findByUser_UserId(currentUser.userId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
@@ -130,11 +136,12 @@ public class StudentServiceImpl implements StudentService {
         } else {
             token = StudentClaimToken.builder()
                     .token(UUID.randomUUID())
+                    .teacher(teacher)
                     .student(student)
                     .createdAt(now)
                     .expiresAt(now.plusMonths(6))
                     .used(false)
-                    .createdBy(createdBy)
+                    .createdBy(currentUser.email())
                     .build();
             tokenRepository.save(token);
         }
