@@ -132,19 +132,31 @@ public class LessonServiceImpl implements LessonService {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found: " + lessonId));
 
-        lesson.setScheduledAt(dto.scheduledAt());
-        lesson.setDurationMinutes(dto.durationMinutes());
-        lesson.setPrice(dto.price());
-        lesson.setStatus(lessonStatusMapper.toEntity(dto.status()));
-        lesson.setHomework(dto.homework());
-        lesson.setFeedback(dto.feedback());
-
-        if (canAccessLesson(currentUser, lesson)) {
-            Lesson saved = lessonRepository.save(lesson);
-            return lessonMapper.toDto(saved);
-        } else {
+        // Проверка прав до изменения данных
+        if (!canAccessLesson(currentUser, lesson)) {
             throw new AccessDeniedException("Access denied");
         }
+
+        if (dto.scheduledAt() != null) {
+            lesson.setScheduledAt(dto.scheduledAt());
+        }
+        if (dto.durationMinutes() != null) {
+            lesson.setDurationMinutes(dto.durationMinutes());
+        }
+        if (dto.price() != null) {
+            lesson.setPrice(dto.price());
+        }
+        if (dto.status() != null) {
+            lesson.setStatus(lessonStatusMapper.toEntity(dto.status()));
+        }
+        if (dto.homework() != null) {
+            lesson.setHomework(dto.homework());
+        }
+        if (dto.feedback() != null) {
+            lesson.setFeedback(dto.feedback());
+        }
+        Lesson updated = lessonRepository.save(lesson);
+        return lessonMapper.toDto(updated);
     }
 
     @Override
