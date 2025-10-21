@@ -15,6 +15,7 @@ public record LessonDto(
                         Integer durationMinutes,
                         BigDecimal price,
                         LessonStatusDto status,
+                        String topic,
                         String homework,
                         String feedback
 ) {

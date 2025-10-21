@@ -27,6 +27,7 @@ public class LessonMapperImpl implements LessonMapper {
                 lesson.getDurationMinutes(),
                 lesson.getPrice(),
                 lessonStatusMapper.toDto(lesson.getStatus()),
+                lesson.getTopic(),
                 lesson.getHomework(),
                 lesson.getFeedback()
                 );
@@ -46,6 +47,7 @@ public class LessonMapperImpl implements LessonMapper {
         lesson.setDurationMinutes(lessonDto.durationMinutes());
         lesson.setPrice(lessonDto.price());
         lesson.setStatus(lessonStatusMapper.toEntity(lessonDto.status()));
+        lesson.setTopic(lessonDto.topic());
         lesson.setHomework(lessonDto.homework());
         lesson.setFeedback(lessonDto.feedback());
         return lesson;

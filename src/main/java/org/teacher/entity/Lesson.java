@@ -37,6 +37,10 @@ public class Lesson {
     @Enumerated(EnumType.STRING)
     private LessonStatus status;         // SCHEDULED, COMPLETED, CANCELED
 
+    // Тема урока / заметка
+    @Column(length = 2000)
+    private String topic;
+
     // Домашнее задание
     @Column(length = 2000)
     private String homework;
