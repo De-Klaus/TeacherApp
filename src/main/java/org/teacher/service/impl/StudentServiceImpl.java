@@ -5,17 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teacher.dto.StudentDto;
-import org.teacher.entity.Lesson;
-import org.teacher.entity.LessonStatus;
-import org.teacher.entity.Payment;
-import org.teacher.entity.Student;
+import org.teacher.dto.request.StudentClaimTokenDto;
+import org.teacher.entity.*;
 import org.teacher.mapper.StudentMapper;
 import org.teacher.repository.LessonRepository;
 import org.teacher.repository.PaymentRepository;
+import org.teacher.repository.StudentClaimTokenRepository;
 import org.teacher.repository.StudentRepository;
 import org.teacher.service.StudentService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final PaymentRepository paymentRepository;
     private final LessonRepository lessonRepository;
     private final StudentMapper studentMapper;
+    private final StudentClaimTokenRepository tokenRepository;
 
     @Override
     public StudentDto addStudent(StudentDto studentDto) {
@@ -107,6 +108,38 @@ public class StudentServiceImpl implements StudentService {
 
         // 3. Баланс = платежи – завершённые уроки
         return totalPayments.subtract(totalLessonsCost);
+    }
+
+    @Override
+    @Transactional
+    public StudentClaimTokenDto generateClaimToken(Long studentId, String createdBy) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+
+        if (student.getStatus() != StudentStatus.CREATED_BY_SYSTEM) {
+            throw new IllegalStateException("Claim token can only be generated for students with status CREATED_BY_SYSTEM");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        StudentClaimToken existingToken = tokenRepository.findFirstByStudentAndUsedFalseAndExpiresAtAfter(student, now)
+                .orElse(null);
+
+        StudentClaimToken token;
+        if (existingToken != null) {
+            token = existingToken;
+        } else {
+            token = StudentClaimToken.builder()
+                    .token(UUID.randomUUID())
+                    .student(student)
+                    .createdAt(now)
+                    .expiresAt(now.plusMonths(6))
+                    .used(false)
+                    .createdBy(createdBy)
+                    .build();
+            tokenRepository.save(token);
+        }
+
+        return new StudentClaimTokenDto(student.getStudentId(), token.getToken(), token.getExpiresAt());
     }
 
 

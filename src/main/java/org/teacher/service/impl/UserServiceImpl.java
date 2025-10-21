@@ -10,14 +10,17 @@ import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.Role;
+import org.teacher.entity.StudentClaimToken;
 import org.teacher.entity.User;
 import org.teacher.exception.DuplicateUserException;
 import org.teacher.mapper.UserMapper;
+import org.teacher.repository.StudentClaimTokenRepository;
 import org.teacher.repository.UserRepository;
 import org.teacher.security.jwt.JwtService;
 import org.teacher.service.UserService;
 
 import javax.naming.AuthenticationException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,9 +34,14 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final StudentClaimTokenRepository tokenRepository;
 
     @Override
     public JwtAuthenticationDto singIn(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
+        if (userCredentialsDto.claimToken() != null) {
+            User user = signInWithClaimToken(userCredentialsDto);
+            return jwtService.generateAuthToken(user);
+        }
         User user = findByCredentials(userCredentialsDto);
         return jwtService.generateAuthToken(user);
     }
@@ -79,6 +87,29 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(Role.USER));
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+
+    private User signInWithClaimToken(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
+        StudentClaimToken token = tokenRepository.findByToken(userCredentialsDto.claimToken())
+                .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
+
+        if (token.isUsed()) {
+            throw new AuthenticationException("Token already used") {};
+        }
+
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AuthenticationException("Token expired") {};
+        }
+
+        User user = token.getUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.STUDENT));
+        var saveUser = userRepository.save(user);
+
+        token.setUsed(true);
+        tokenRepository.save(token);
+
+        return saveUser;
     }
 
     private User findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {

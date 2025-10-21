@@ -1,6 +1,7 @@
 package org.teacher.service;
 
 import org.teacher.dto.StudentDto;
+import org.teacher.dto.request.StudentClaimTokenDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,4 +17,5 @@ public interface StudentService {
     StudentDto update(Long studentId, StudentDto dto);
     void delete(Long studentId);
     BigDecimal calculateBalance(Long studentId);
+    StudentClaimTokenDto generateClaimToken(Long studentId, String createdBy);
 }

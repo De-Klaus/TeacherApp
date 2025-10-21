@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.StudentTeacherDto;
+import org.teacher.dto.request.StudentTeacherSystemRequestDto;
 import org.teacher.mapper.StudentTeacherMapper;
 import org.teacher.service.StudentTeacherService;
 
@@ -23,6 +24,14 @@ public class StudentTeacherController {
     @PostMapping
     public ResponseEntity<StudentTeacherDto> createStudentTeacher(@RequestBody @Valid StudentTeacherDto studentTeacherDto) {
         StudentTeacherDto responseDto = studentTeacherService.addStudentTeacher(studentTeacherDto);
+        return ResponseEntity
+                .created(URI.create("/student-teachers/" + responseDto.id()))
+                .body(responseDto);
+    }
+
+    @PostMapping("/by-system")
+    public ResponseEntity<StudentTeacherDto> createStudentTeacherAndStudentBySystem(@RequestBody @Valid StudentTeacherSystemRequestDto dto) {
+        StudentTeacherDto responseDto = studentTeacherService.createBySystem(dto);
         return ResponseEntity
                 .created(URI.create("/student-teachers/" + responseDto.id()))
                 .body(responseDto);

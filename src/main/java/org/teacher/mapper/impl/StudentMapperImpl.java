@@ -2,7 +2,9 @@ package org.teacher.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import org.teacher.dto.StudentDto;
+import org.teacher.dto.request.StudentCreateRequestDto;
 import org.teacher.entity.Student;
+import org.teacher.entity.StudentStatus;
 import org.teacher.entity.User;
 import org.teacher.mapper.StudentMapper;
 
@@ -39,6 +41,7 @@ public class StudentMapperImpl implements StudentMapper {
 
         Student student = new Student();
         student.setStudentId(studentDto.id());
+        student.setStatus(StudentStatus.ACTIVE);
         student.setUser(user);
         student.setBirthDate(studentDto.birthDate());
         student.setPhoneNumber(studentDto.phoneNumber());
@@ -46,6 +49,19 @@ public class StudentMapperImpl implements StudentMapper {
         student.setTimeZone(studentDto.timeZone());
         student.setGrade(studentDto.grade());
         student.setSchool(studentDto.school());
+        return student;
+    }
+
+    @Override
+    public Student toStudent(StudentCreateRequestDto dto) {
+        if (dto == null) return null;
+        Student student = new Student();
+        student.setBirthDate(dto.birthDate());
+        student.setPhoneNumber(dto.phoneNumber());
+        student.setCity(dto.city());
+        student.setTimeZone(dto.timeZone());
+        student.setGrade(dto.grade());
+        student.setSchool(dto.school());
         return student;
     }
 }

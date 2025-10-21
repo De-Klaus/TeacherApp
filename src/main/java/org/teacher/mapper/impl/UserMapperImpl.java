@@ -2,6 +2,7 @@ package org.teacher.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import org.teacher.dto.UserCredentialsDto;
+import org.teacher.dto.request.StudentCreateRequestDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.entity.Role;
@@ -32,12 +33,20 @@ public class UserMapperImpl implements UserMapper {
         if (userDto == null) return null;
 
         User user = new User();
-        user.setUserId(userDto.userId());
         user.setFirstName(userDto.firstName());
         user.setLastName(userDto.lastName());
-        user.setEmail(userDto.email());
         user.setRoles(userDto.roles() != null ? userDto.roles() : Collections.emptySet());
+        return user;
+    }
 
+    @Override
+    public User toUserEntity(StudentCreateRequestDto dto) {
+        if (dto == null) return null;
+
+        User user = new User();
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setRoles(Collections.emptySet());
         return user;
     }
 
@@ -77,7 +86,8 @@ public class UserMapperImpl implements UserMapper {
 
         return new UserCredentialsDto(
                 user.email(),
-                user.password()
+                user.password(),
+                null
         );
     }
 }

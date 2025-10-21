@@ -2,27 +2,91 @@ package org.teacher.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.teacher.dto.StudentDto;
 import org.teacher.dto.StudentTeacherDto;
-import org.teacher.entity.StudentTeacher;
-import org.teacher.entity.StudentTeacherStatus;
+import org.teacher.dto.request.StudentTeacherSystemRequestDto;
+import org.teacher.dto.request.UserSystemRequestDto;
+import org.teacher.dto.response.UserResponseDto;
+import org.teacher.entity.*;
+import org.teacher.mapper.StudentMapper;
 import org.teacher.mapper.StudentTeacherMapper;
-import org.teacher.repository.StudentTeacherRepository;
+import org.teacher.mapper.UserMapper;
+import org.teacher.repository.*;
+import org.teacher.service.AuthService;
 import org.teacher.service.StudentTeacherService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class StudentTeacherServiceImpl implements StudentTeacherService {
 
+    private final AuthService authService;
+
     private final StudentTeacherRepository studentTeacherRepository;
     private final StudentTeacherMapper studentTeacherMapper;
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
+
+    private final StudentClaimTokenRepository tokenRepository;
+    private final TeacherRepository teacherRepository;
 
     @Override
     public StudentTeacherDto addStudentTeacher(StudentTeacherDto studentTeacherDto) {
         StudentTeacher studentTeacher = studentTeacherMapper.toEntity(studentTeacherDto);
+        StudentTeacher saved = studentTeacherRepository.save(studentTeacher);
+        return studentTeacherMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public StudentTeacherDto createBySystem(StudentTeacherSystemRequestDto dto) {
+
+        UserResponseDto currentUser = authService.getCurrentUser();
+
+        Teacher teacher = teacherRepository.findById(dto.teacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+
+        var user = userMapper.toUserEntity(dto.student());
+        var saveUser = userRepository.save(user);
+
+        Student student = studentMapper.toStudent(dto.student());
+        student.setUser(saveUser);
+        student.setStatus(StudentStatus.CREATED_BY_SYSTEM);
+        Student savedStudent = studentRepository.save(student);
+
+        StudentClaimToken claimToken = StudentClaimToken.builder()
+                .token(UUID.randomUUID())
+                .user(saveUser)
+                .student(savedStudent)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMonths(6))
+                .used(false)
+                .createdBy(currentUser.email())
+                .build();
+
+        tokenRepository.save(claimToken);
+
+        StudentTeacher studentTeacher = studentTeacherMapper.toEntity(new StudentTeacherDto(
+                null,
+                savedStudent.getStudentId(),
+                teacher.getTeacherId(),
+                dto.startDate(),
+                dto.endDate(),
+                dto.agreedRate(),
+                StudentTeacherStatus.ACTIVE
+        ));
         StudentTeacher saved = studentTeacherRepository.save(studentTeacher);
         return studentTeacherMapper.toDto(saved);
     }

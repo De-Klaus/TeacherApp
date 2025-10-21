@@ -25,8 +25,12 @@ public class Student {
     @Column(name = "student_id")
     private Long studentId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StudentStatus status; // например: CREATED_BY_TEACHER, REGISTERED, ACTIVE
+
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     private LocalDate birthDate;

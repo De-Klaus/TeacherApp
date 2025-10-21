@@ -2,11 +2,16 @@ package org.teacher.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.StudentDto;
-import org.teacher.dto.TeacherDto;
+import org.teacher.dto.request.StudentClaimTokenDto;
+import org.teacher.dto.response.UserResponseDto;
+import org.teacher.entity.Role;
 import org.teacher.mapper.StudentMapper;
+import org.teacher.service.AuthService;
 import org.teacher.service.StudentService;
 
 import java.net.URI;
@@ -20,6 +25,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final StudentMapper studentMapper;
+    private final AuthService authService;
 
     @PostMapping
     public ResponseEntity<StudentDto> createStudent(@RequestBody @Valid StudentDto studentDto) {
@@ -57,5 +63,19 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable("id") Long studentId) {
         studentService.delete(studentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @PostMapping("/{id}/claim-token")
+    public ResponseEntity<StudentClaimTokenDto> generateClaimToken(@PathVariable("id") Long studentId) {
+
+        // Проверяем роль текущего пользователя
+        UserResponseDto currentUser = authService.getCurrentUser();
+        if (!currentUser.roles().contains(Role.TEACHER)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        StudentClaimTokenDto claimTokenDto = studentService.generateClaimToken(studentId, currentUser.email());
+        return ResponseEntity.ok(claimTokenDto);
     }
 }
