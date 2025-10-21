@@ -9,12 +9,11 @@ import org.teacher.dto.RefreshTokenDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
-import org.teacher.entity.Role;
-import org.teacher.entity.StudentClaimToken;
-import org.teacher.entity.User;
+import org.teacher.entity.*;
 import org.teacher.exception.DuplicateUserException;
 import org.teacher.mapper.UserMapper;
 import org.teacher.repository.StudentClaimTokenRepository;
+import org.teacher.repository.StudentRepository;
 import org.teacher.repository.UserRepository;
 import org.teacher.security.jwt.JwtService;
 import org.teacher.service.UserService;
@@ -31,6 +30,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final UserMapper userMapper;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -101,6 +101,8 @@ public class UserServiceImpl implements UserService {
             throw new AuthenticationException("Token expired") {};
         }
 
+        Student student = token.getStudent();
+
         User user = token.getUser();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(Role.STUDENT));
@@ -108,6 +110,9 @@ public class UserServiceImpl implements UserService {
 
         token.setUsed(true);
         tokenRepository.save(token);
+
+        student.setStatus(StudentStatus.ACTIVE);
+        studentRepository.save(student);
 
         return saveUser;
     }

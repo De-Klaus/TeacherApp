@@ -22,6 +22,7 @@ public class StudentMapperImpl implements StudentMapper {
         String lastName = student.getUser() != null ? student.getUser().getLastName() : null;
         return new StudentDto(
                             student.getStudentId(),
+                            student.getStatus(),
                             userId,
                             firstName,
                             lastName,

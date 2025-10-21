@@ -29,6 +29,7 @@ public class StudentTeacherController {
                 .body(responseDto);
     }
 
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     @PostMapping("/by-system")
     public ResponseEntity<StudentTeacherDto> createStudentTeacherAndStudentBySystem(@RequestBody @Valid StudentTeacherSystemRequestDto dto) {
         StudentTeacherDto responseDto = studentTeacherService.createBySystem(dto);
