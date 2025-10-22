@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teacher.dto.JwtAuthenticationDto;
 import org.teacher.dto.RefreshTokenDto;
+import org.teacher.dto.TeacherDto;
 import org.teacher.dto.UserCredentialsDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
@@ -87,6 +88,14 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(Role.USER));
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+
+    @Override
+    public List<UserResponseDto> getAllWithoutTeacher() {
+        return userRepository.findTeachersWithoutTeacherEntity(Role.TEACHER)
+                .stream()
+                .map(userMapper::toResponseDto)
+                .toList();
     }
 
     private User signInWithClaimToken(UserCredentialsDto userCredentialsDto) throws AuthenticationException {

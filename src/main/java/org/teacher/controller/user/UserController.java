@@ -5,12 +5,15 @@ import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.teacher.dto.TeacherDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.service.UserService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,5 +46,11 @@ public class UserController {
         return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/without-teacher")
+    public ResponseEntity<List<UserResponseDto>> getAllUserWithoutTeacherEntity() {
+        return ResponseEntity.ok(userService.getAllWithoutTeacher());
     }
 }

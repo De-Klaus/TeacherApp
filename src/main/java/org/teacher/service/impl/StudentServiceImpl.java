@@ -136,6 +136,7 @@ public class StudentServiceImpl implements StudentService {
         } else {
             token = StudentClaimToken.builder()
                     .token(UUID.randomUUID())
+                    //.user()
                     .teacher(teacher)
                     .student(student)
                     .createdAt(now)

@@ -25,4 +25,6 @@ public interface UserService {
     List<UserResponseDto> getAll();
 
     UserResponseDto addUser(UserRequestDto user);
+
+    List<UserResponseDto> getAllWithoutTeacher();
 }
