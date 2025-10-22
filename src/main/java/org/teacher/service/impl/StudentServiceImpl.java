@@ -134,9 +134,11 @@ public class StudentServiceImpl implements StudentService {
         if (existingToken != null) {
             token = existingToken;
         } else {
+            StudentClaimToken expiredToken = tokenRepository.findFirstByStudent_StudentIdOrderByCreatedAtDesc(student.getStudentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Token not found"));
             token = StudentClaimToken.builder()
                     .token(UUID.randomUUID())
-                    //.user()
+                    .user(expiredToken.getUser())
                     .teacher(teacher)
                     .student(student)
                     .createdAt(now)

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record StudentClaimTokenDto(
-        Long studentId,
+        Long id,
         UUID claimToken,
         LocalDateTime expiresAt
 ) {

@@ -2,16 +2,12 @@ package org.teacher.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.teacher.dto.StudentDto;
 import org.teacher.dto.request.StudentClaimTokenDto;
-import org.teacher.dto.response.UserResponseDto;
-import org.teacher.entity.Role;
 import org.teacher.mapper.StudentMapper;
-import org.teacher.service.AuthService;
 import org.teacher.service.StudentService;
 
 import java.net.URI;

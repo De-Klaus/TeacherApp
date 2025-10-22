@@ -13,4 +13,5 @@ import java.util.UUID;
 public interface StudentClaimTokenRepository extends JpaRepository<StudentClaimToken, Long> {
     Optional<StudentClaimToken> findByToken(UUID token);
     Optional<StudentClaimToken> findFirstByStudentAndUsedFalseAndExpiresAtAfter(Student student, LocalDateTime now);
+    Optional<StudentClaimToken> findFirstByStudent_StudentIdOrderByCreatedAtDesc(Long studentId);
 }
