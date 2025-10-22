@@ -21,10 +21,7 @@ import org.teacher.service.UserService;
 
 import org.springframework.security.core.AuthenticationException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,35 +48,6 @@ public class UserServiceImpl implements UserService {
             return jwtService.refreshBaseToken(user, refreshToken);
         }
         throw new  AuthenticationException("Invalid refresh token") {};
-    }
-
-    @Override
-    public UserResponseDto registerStudent(UUID claimToken) throws AuthenticationException{
-        StudentClaimToken token = tokenRepository.findByToken(claimToken)
-                .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
-
-        if (token.isUsed()) {
-            throw new AuthenticationException("Token already used") {};
-        }
-
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new AuthenticationException("Token expired") {};
-        }
-
-        Student student = token.getStudent();
-
-        User user = token.getUser();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(Role.STUDENT));
-        var saveUser = userRepository.save(user);
-
-        token.setUsed(true);
-        tokenRepository.save(token);
-
-        student.setStatus(StudentStatus.ACTIVE);
-        studentRepository.save(student);
-
-        return userMapper.toResponseDto(user);
     }
 
     @Override
@@ -113,6 +81,49 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(Role.USER));
         userRepository.save(user);
         return userMapper.toResponseDto(user);
+    }
+
+    @Override
+    public UserResponseDto registerStudent(UUID claimToken, UserRequestDto userDto) throws AuthenticationException{
+        StudentClaimToken token = tokenRepository.findByToken(claimToken)
+                .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
+
+        if (token.isUsed()) {
+            throw new AuthenticationException("Token already used") {};
+        }
+
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AuthenticationException("Token expired") {};
+        }
+
+        if (userRepository.existsByEmail(userDto.email())) {
+            throw new DuplicateUserException("User with email already exists: " + userDto.email());
+        }
+
+        Student student = token.getStudent();
+
+        User user = token.getUser();
+        if(!Objects.equals(userDto.firstName(), user.getFirstName())) {
+            user.setFirstName(userDto.firstName());
+        }
+        if(!Objects.equals(userDto.lastName(), user.getLastName())) {
+            user.setLastName(userDto.lastName());
+        }
+        user.setEmail(userDto.email());
+        user.setPassword(passwordEncoder.encode(userDto.password()));
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
+        user.getRoles().add(Role.STUDENT);
+        var saveUser = userRepository.save(user);
+
+        token.setUsed(true);
+        tokenRepository.save(token);
+
+        student.setStatus(StudentStatus.ACTIVE);
+        studentRepository.save(student);
+
+        return userMapper.toResponseDto(saveUser);
     }
 
     @Override

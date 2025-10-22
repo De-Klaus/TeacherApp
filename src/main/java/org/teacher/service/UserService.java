@@ -18,8 +18,6 @@ public interface UserService {
 
     JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) throws AuthenticationException;
 
-    UserResponseDto registerStudent(UUID claimToken);
-
     Optional<UserResponseDto> getUserById(UUID id);
 
     Optional<UserResponseDto> getUserByEmail(String email);
@@ -27,6 +25,8 @@ public interface UserService {
     List<UserResponseDto> getAll();
 
     UserResponseDto addUser(UserRequestDto user);
+
+    UserResponseDto registerStudent(UUID claimToken, UserRequestDto userDto);
 
     List<UserResponseDto> getAllWithoutTeacher();
 }
