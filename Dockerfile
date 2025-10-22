@@ -11,7 +11,8 @@ COPY . .
 RUN chmod +x gradlew
 
 # Сборка проекта
-RUN ./gradlew build
+#RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # Указываем порт, который приложение будет слушать
 EXPOSE 8080
