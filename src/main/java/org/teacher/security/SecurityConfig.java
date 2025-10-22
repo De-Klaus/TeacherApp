@@ -34,16 +34,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Разрешаем CORS
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                /*.csrf(csrf -> csrf
-                        //.disable()
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/ws-board/**")) // or use ignoringRequestMatchers only, then remove disable()
-                )*/
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        // 1) Permit SockJS/STOMP handshake + transports (GET /info, OPTIONS, POST xhr_streaming, etc.)
+                        .requestMatchers(HttpMethod.POST, "/users/register-by-token").permitAll()
                         .requestMatchers("/ws-board/**").permitAll()
-
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/**").authenticated()
                         .anyRequest().denyAll()

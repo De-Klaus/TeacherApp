@@ -19,7 +19,7 @@ import org.teacher.repository.UserRepository;
 import org.teacher.security.jwt.JwtService;
 import org.teacher.service.UserService;
 
-import javax.naming.AuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
             User user = findByEmail(jwtService.getEmailFromToken(refreshToken));
             return jwtService.refreshBaseToken(user, refreshToken);
         }
-        throw new  AuthenticationException("Invalid refresh token");
+        throw new  AuthenticationException("Invalid refresh token") {};
     }
 
     @Override
-    public JwtAuthenticationDto registerStudent(UUID claimToken) throws AuthenticationException{
+    public UserResponseDto registerStudent(UUID claimToken) throws AuthenticationException{
         StudentClaimToken token = tokenRepository.findByToken(claimToken)
                 .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
 
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         student.setStatus(StudentStatus.ACTIVE);
         studentRepository.save(student);
 
-        return jwtService.generateAuthToken(saveUser);
+        return userMapper.toResponseDto(user);
     }
 
     @Override
@@ -126,11 +126,11 @@ public class UserServiceImpl implements UserService {
     private User findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
         return userRepository.findByEmail(userCredentialsDto.email())
                 .filter(user -> passwordEncoder.matches(userCredentialsDto.password(), user.getPassword()))
-                .orElseThrow(() -> new AuthenticationException("Email or password is incorrect"));
+                .orElseThrow(() -> new AuthenticationException("Email or password is incorrect"){});
     }
 
     private User findByEmail(String email) throws AuthenticationException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthenticationException(String.format("User with email %s not found", email)));
+                .orElseThrow(() -> new AuthenticationException(String.format("User with email %s not found", email)){});
     }
 }

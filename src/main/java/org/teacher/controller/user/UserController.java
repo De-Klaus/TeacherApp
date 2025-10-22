@@ -4,14 +4,17 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.teacher.dto.JwtAuthenticationDto;
 import org.teacher.dto.TeacherDto;
 import org.teacher.dto.request.UserRequestDto;
 import org.teacher.dto.response.UserResponseDto;
 import org.teacher.service.UserService;
 
+import javax.naming.AuthenticationException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +29,14 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userDto) {
         UserResponseDto responseDto = userService.addUser(userDto);
+        return ResponseEntity
+                .created(URI.create("/users/" + responseDto.userId()))
+                .body(responseDto);
+    }
+
+    @PostMapping("register-by-token")
+    public ResponseEntity<UserResponseDto> createUserByToken(@RequestParam("token") UUID claimToken) {
+        UserResponseDto responseDto = userService.registerStudent(claimToken);
         return ResponseEntity
                 .created(URI.create("/users/" + responseDto.userId()))
                 .body(responseDto);
