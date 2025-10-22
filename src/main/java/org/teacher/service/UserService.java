@@ -18,6 +18,8 @@ public interface UserService {
 
     JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) throws AuthenticationException;
 
+    JwtAuthenticationDto registerStudent(UUID claimToken) throws AuthenticationException;
+
     Optional<UserResponseDto> getUserById(UUID id);
 
     Optional<UserResponseDto> getUserByEmail(String email);

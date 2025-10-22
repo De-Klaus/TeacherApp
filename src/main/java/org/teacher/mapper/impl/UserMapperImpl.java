@@ -83,11 +83,9 @@ public class UserMapperImpl implements UserMapper {
     @Override
     public UserCredentialsDto toCredentialsDto(UserRequestDto user) {
         if (user == null) return null;
-
         return new UserCredentialsDto(
                 user.email(),
-                user.password(),
-                null
+                user.password()
         );
     }
 }

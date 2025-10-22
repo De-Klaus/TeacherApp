@@ -39,10 +39,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JwtAuthenticationDto singIn(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
-        if (userCredentialsDto.claimToken() != null) {
-            User user = signInWithClaimToken(userCredentialsDto);
-            return jwtService.generateAuthToken(user);
-        }
         User user = findByCredentials(userCredentialsDto);
         return jwtService.generateAuthToken(user);
     }
@@ -55,6 +51,35 @@ public class UserServiceImpl implements UserService {
             return jwtService.refreshBaseToken(user, refreshToken);
         }
         throw new  AuthenticationException("Invalid refresh token");
+    }
+
+    @Override
+    public JwtAuthenticationDto registerStudent(UUID claimToken) throws AuthenticationException{
+        StudentClaimToken token = tokenRepository.findByToken(claimToken)
+                .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
+
+        if (token.isUsed()) {
+            throw new AuthenticationException("Token already used") {};
+        }
+
+        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AuthenticationException("Token expired") {};
+        }
+
+        Student student = token.getStudent();
+
+        User user = token.getUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.STUDENT));
+        var saveUser = userRepository.save(user);
+
+        token.setUsed(true);
+        tokenRepository.save(token);
+
+        student.setStatus(StudentStatus.ACTIVE);
+        studentRepository.save(student);
+
+        return jwtService.generateAuthToken(saveUser);
     }
 
     @Override
@@ -96,34 +121,6 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(userMapper::toResponseDto)
                 .toList();
-    }
-
-    private User signInWithClaimToken(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
-        StudentClaimToken token = tokenRepository.findByToken(userCredentialsDto.claimToken())
-                .orElseThrow(() -> new AuthenticationException("Invalid claim token") {});
-
-        if (token.isUsed()) {
-            throw new AuthenticationException("Token already used") {};
-        }
-
-        if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new AuthenticationException("Token expired") {};
-        }
-
-        Student student = token.getStudent();
-
-        User user = token.getUser();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(Role.STUDENT));
-        var saveUser = userRepository.save(user);
-
-        token.setUsed(true);
-        tokenRepository.save(token);
-
-        student.setStatus(StudentStatus.ACTIVE);
-        studentRepository.save(student);
-
-        return saveUser;
     }
 
     private User findByCredentials(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
