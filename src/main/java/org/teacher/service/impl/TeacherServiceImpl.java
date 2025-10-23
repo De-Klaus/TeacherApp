@@ -5,14 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.teacher.dto.StudentDto;
 import org.teacher.dto.TeacherDto;
+import org.teacher.entity.Role;
 import org.teacher.entity.Teacher;
+import org.teacher.entity.User;
 import org.teacher.mapper.StudentMapper;
 import org.teacher.mapper.TeacherMapper;
 import org.teacher.repository.StudentTeacherRepository;
 import org.teacher.repository.TeacherRepository;
+import org.teacher.repository.UserRepository;
 import org.teacher.service.TeacherService;
 import org.teacher.entity.StudentTeacher;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,12 +27,21 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final StudentTeacherRepository studentTeacherRepository;
     private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
     private final TeacherMapper teacherMapper;
     private final StudentMapper studentMapper;
 
     @Override
     public TeacherDto addTeacher(TeacherDto teacherDto) {
         Teacher teacher = teacherMapper.toEntity(teacherDto);
+        User user = userRepository.findById(teacherDto.userId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + teacherDto.userId()));
+        if (user.getRoles() == null) {
+            user.setRoles(new HashSet<>());
+        }
+        user.getRoles().add(Role.TEACHER);
+        var saveUser = userRepository.save(user);
+        teacher.setUser(saveUser);
         Teacher saved = teacherRepository.save(teacher);
         return teacherMapper.toDto(saved);
     }

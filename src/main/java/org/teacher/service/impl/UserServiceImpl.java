@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllWithoutTeacher() {
-        return userRepository.findTeachersWithoutTeacherEntity(Role.TEACHER)
+        return userRepository.findTeachersWithoutTeacherEntity(Role.USER)
                 .stream()
                 .map(userMapper::toResponseDto)
                 .toList();
