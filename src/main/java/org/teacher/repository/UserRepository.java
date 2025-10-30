@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.teacher.entity.Role;
 import org.teacher.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,5 +27,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             SELECT t.user.userId FROM Teacher t
         )
         """)
-    Optional<User> findTeachersWithoutTeacherEntity(@Param("role") Role role);
+    List<User> findTeachersWithoutTeacherEntity(@Param("role") Role role);
 }
