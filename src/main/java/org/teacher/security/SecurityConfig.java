@@ -55,6 +55,11 @@ public class SecurityConfig {
                 "http://localhost:10000",  // Фронт в деве
                 "https://teacher-app-frontend-mnsu.onrender.com" // Фронт в проде
         )); // ✅ Разрешаем фронт
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",      // Любой порт localhost
+                "http://192.168.*.*:*",    // Локальная сеть (для React Native/Expo)
+                "http://10.*.*.*:*"        // Альтернативная локальная сеть
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // ✅ Разрешаем нужные методы
         //configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Разрешаем заголовки
         configuration.setAllowedHeaders(List.of("*")); // ✅ Разрешаем все заголовки
